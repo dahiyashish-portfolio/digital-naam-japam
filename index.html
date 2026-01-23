@@ -2,8 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ff9933">
+    <meta name="description" content="Digital Naam Bank - A spiritual tool for Likhita Japa and Meditation.">
     <title>Sadhana: Darshan Edition</title>
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
     <style>
         /* --- 1. THEME VARIABLES --- */
         :root {
@@ -23,6 +31,7 @@
             background-color: var(--bg); color: var(--text); margin: 0;
             display: flex; flex-direction: column; align-items: center; min-height: 100vh;
             transition: all 0.3s ease; user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* --- 2. HEADER & CONTROLS --- */
@@ -48,33 +57,23 @@
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             z-index: 2; width: 130px; height: 130px;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            border-radius: 50%; overflow: hidden; /* Clips the image to circle */
+            border-radius: 50%; overflow: hidden;
             border: 3px solid var(--primary);
             box-shadow: var(--shadow), inset 0 0 20px rgba(255, 153, 51, 0.5);
             background: var(--bg);
         }
 
-        /* The Ishta Devata Image */
         #ishtaImageDisplay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; 
-            z-index: 0;
-            opacity: 1; /* Default start */
-            transition: opacity 2s ease; /* Smooth fading */
+            object-fit: cover; z-index: 0; opacity: 1; transition: opacity 2s ease;
         }
         
-        /* Updated Jyoti States - NO GRAYSCALE, ONLY OPACITY */
         .jyoti-flicker { animation: flickerAnim 2s infinite alternate; }
-        
-        @keyframes flickerAnim {
-            0% { opacity: 0.6; } /* Dim but visible */
-            100% { opacity: 0.3; } /* Fainter */
-        }
+        @keyframes flickerAnim { 0% { opacity: 0.6; } 100% { opacity: 0.3; } }
 
-        /* Text overlaying the image */
         .stats-text {
             position: relative; z-index: 1; text-align: center;
-            text-shadow: 0 0 5px var(--bg), 0 0 10px var(--bg), 0 0 15px var(--bg); /* Strong glow for readability */
+            text-shadow: 0 0 5px var(--bg), 0 0 10px var(--bg), 0 0 15px var(--bg);
         }
         .rounds-count { font-size: 2rem; font-weight: 800; color: var(--primary); line-height: 1; }
 
@@ -119,7 +118,6 @@
         input, select { flex-grow: 1; padding: 10px; border-radius: 5px; border: 1px solid #ccc; }
         .file-upload { border: 1px dashed var(--text); padding: 10px; margin: 10px 0; font-size: 0.8rem; text-align: left; }
     </style>
-    <link rel="manifest" href="manifest.json">
 </head>
 <body>
 
@@ -128,8 +126,9 @@
         <button class="icon-btn" id="themeBtn" title="Theme">🌑</button>
         <button class="icon-btn" id="soundBtn" title="Temple Sound">🔊</button>
         <button class="icon-btn" id="modeBtn" title="Switch Mode">⌨️</button>
-        <button class="icon-btn" id="backupBtn" title="Secure Backup">💾</button>
+        <button class="icon-btn" id="backupBtn" title="Backup">💾</button>
         <button class="icon-btn" id="restoreBtn" title="Restore">📂</button>
+        <button class="icon-btn" onclick="netlifyIdentity.open()" title="Login">👤</button>
         <button class="icon-btn jholi-btn" id="jholiBtn">🎒 Jholi</button>
     </div>
 
@@ -158,20 +157,15 @@
     <div class="modal-overlay" id="settingsModal">
         <div class="modal-box">
             <h3>⚙️ Ishta Devata Settings</h3>
-            
             <div class="file-upload" style="background: var(--bg); border-color: var(--primary);">
                 <label style="font-weight:bold;">🖼️ Upload Deity Image</label>
-                <div style="font-size:0.75rem; margin-bottom:5px;">
-                    Logic: Starts translucent. Becomes clearer as you type. Fades if you stop.
-                </div>
+                <div style="font-size:0.75rem; margin-bottom:5px;">Image starts bright, then depends on your focus.</div>
                 <input type="file" id="ishtaInput" accept="image/*">
             </div>
-
             <label style="display:block; text-align:left; font-size:0.8rem; margin-top:10px;">Mantra</label>
             <div class="input-row"><input type="text" id="mantraInput" placeholder="e.g., Ram"></div>
             <label style="display:block; text-align:left; font-size:0.8rem;">Target</label>
             <div class="input-row"><input type="number" id="targetInput" placeholder="e.g., 108"></div>
-            
             <hr style="opacity:0.3">
             <h4>Transliteration</h4>
             <div class="input-row">
@@ -185,16 +179,23 @@
     <div class="modal-overlay" id="jholiModal">
         <div class="modal-box">
             <h3>🎒 Naam Jholi</h3> <h1 style="color:var(--primary)" id="jholiTotal">0</h1> <p>Total Collected</p>
-            <div style="text-align: left; margin-top: 20px;"> <input type="text" id="devName" placeholder="Your Name" style="width:100%; margin-bottom:5px;"> <input type="text" id="ardasNote" placeholder="Ardas / Prayer" style="width:100%;"> <div class="file-upload"><label>✍️ Handwritten Mantra</label><input type="file" id="hwMantraInput" accept="image/*"></div> <div class="file-upload"><label>🖊️ Signature</label><input type="file" id="sigInput" accept="image/*"></div> </div>
-            <button class="modal-btn btn-s" style="background:var(--text); color:var(--bg)" id="printBtn">🖨️ Print Deposit Slip</button> <button class="modal-btn btn-s" onclick="document.getElementById('jholiModal').style.display='none'">Close</button>
+            <div style="text-align: left; margin-top: 20px;">
+                <input type="text" id="devName" placeholder="Your Name" style="width:100%; margin-bottom:5px;">
+                <input type="text" id="ardasNote" placeholder="Ardas / Prayer" style="width:100%;">
+                <div class="file-upload"><label>✍️ Handwritten Mantra</label><input type="file" id="hwMantraInput" accept="image/*"></div>
+                <div class="file-upload"><label>🖊️ Signature</label><input type="file" id="sigInput" accept="image/*"></div>
+            </div>
+            <button class="modal-btn btn-s" style="background:var(--text); color:var(--bg)" id="printBtn">🖨️ Print Deposit Slip</button>
+            <button class="modal-btn btn-s" onclick="document.getElementById('jholiModal').style.display='none'">Close</button>
         </div>
     </div>
+
     <div class="modal-overlay" id="backupModal"> <div class="modal-box"> <h3>🔐 Encrypted Backup</h3> <input type="password" id="backupPass" placeholder="Create Password" style="width:90%; padding:10px; margin:10px 0;"> <button class="modal-btn btn-p" id="doBackupBtn">Download .json</button> <button class="modal-btn btn-s" onclick="document.getElementById('backupModal').style.display='none'">Cancel</button> </div> </div>
     <div class="modal-overlay" id="restoreModal"> <div class="modal-box"> <h3>📂 Restore</h3> <input type="file" id="restoreFile" accept=".json"><input type="password" id="restorePass" placeholder="Password" style="width:90%; padding:10px; margin:10px 0;"> <button class="modal-btn btn-p" id="doRestoreBtn">Decrypt & Restore</button> <button class="modal-btn btn-s" onclick="document.getElementById('restoreModal').style.display='none'">Cancel</button> </div> </div>
 
     <script>
         // STATE
-        const KEYS = { DATA: 'sadhana_darshan_data', CONFIG: 'sadhana_darshan_config', HIST: 'sadhana_darshan_hist' };
+        const KEYS = { DATA: 'sadhana_app_data', CONFIG: 'sadhana_app_config', HIST: 'sadhana_app_hist' };
         const MALA_SIZE = 108; const TAP_LIMIT = 180;
         const WARNINGS = ["⚠️ Do not bypass rule.", "⚠️ Time bypasses you.", "⚠️ Devotion is effort.", "⚠️ Honesty is offering.", "⚠️ No shortcuts."];
         let warningIdx = 0;
@@ -202,29 +203,23 @@
         let appData = { count: 0, text: "", date: new Date().toDateString(), ishtaImg: null };
         let config = { mantra: "Ram", target: 108, theme: "light", transEnable: false, transScript: "राम" };
         let history = [];
-        
-        // Timer Vars
         let lastActivityTime = Date.now();
         let jyotiInterval = null;
-        let darshanModeActive = false; // Flag to check if initial 5s passed
-
+        let darshanModeActive = false; 
         let lastTap = 0, isClicker = false, audioCtx = null, ctx = null, hwImg = null, sigImg = null, oscillator=null;
 
-        // INIT
         window.onload = () => {
             ctx = document.getElementById('mandalaCanvas').getContext('2d');
             loadState(); drawMandala(appData.count); applyTheme(); checkDay();
-            
-            // Start the logic loop
             startLogicLoop();
-
-            // Initial 5-second "Clear Glimpse" logic
             if(appData.ishtaImg) {
                 const img = document.getElementById('ishtaImageDisplay');
-                img.style.opacity = 1.0; // Show fully bright initially
-                setTimeout(() => {
-                    darshanModeActive = true; // After 5s, enable the progressive logic
-                }, 5000);
+                img.style.opacity = 1.0; 
+                setTimeout(() => { darshanModeActive = true; }, 5000);
+            }
+            // Register Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./sw.js').then(() => console.log('SW Registered'));
             }
         };
 
@@ -237,7 +232,6 @@
             document.getElementById('transEnable').checked = config.transEnable;
             document.getElementById('jaapArea').value = appData.text;
             document.getElementById('targetDisplay').innerText = config.target;
-            
             if(appData.ishtaImg) {
                 const img = document.getElementById('ishtaImageDisplay');
                 img.src = appData.ishtaImg; img.style.display = 'block';
@@ -246,96 +240,49 @@
         }
         function saveState() { localStorage.setItem(KEYS.DATA,JSON.stringify(appData)); localStorage.setItem(KEYS.CONFIG,JSON.stringify(config)); localStorage.setItem(KEYS.HIST,JSON.stringify(history)); }
         
-        // --- DARSHAN / VISIBILITY LOGIC ---
-        function resetActivity() {
-            lastActivityTime = Date.now();
-            updateIshtaVisibility(); 
-        }
-
-        function startLogicLoop() {
-            if(jyotiInterval) clearInterval(jyotiInterval);
-            jyotiInterval = setInterval(updateIshtaVisibility, 1000);
-        }
-
+        function resetActivity() { lastActivityTime = Date.now(); updateIshtaVisibility(); }
+        function startLogicLoop() { if(jyotiInterval) clearInterval(jyotiInterval); jyotiInterval = setInterval(updateIshtaVisibility, 1000); }
         function updateIshtaVisibility() {
             const img = document.getElementById('ishtaImageDisplay');
             if(!appData.ishtaImg) return;
-
-            // If we are in the first 5 seconds, keep it bright
-            if(!darshanModeActive) {
-                img.style.opacity = 1.0;
-                img.classList.remove('jyoti-flicker');
-                return;
-            }
-
+            if(!darshanModeActive) { img.style.opacity = 1.0; img.classList.remove('jyoti-flicker'); return; }
             const secondsInactive = (Date.now() - lastActivityTime) / 1000;
             const progress = Math.min(appData.count / config.target, 1);
-            
-            // Base Opacity Logic: Starts at 0.3, goes to 1.0 based on progress
             let baseOpacity = 0.3 + (0.7 * progress);
-            
-            // Inactivity Penalty
             img.classList.remove('jyoti-flicker');
-
-            if (secondsInactive > 60) {
-                // If inactive > 1 min: Fade to bare minimum (0.2), NO Grayscale
-                img.style.opacity = 0.2;
-            } else if (secondsInactive > 10) {
-                // If inactive > 30s: Flicker and dim slightly
-                img.style.opacity = baseOpacity * 0.7; 
-                img.classList.add('jyoti-flicker');
-            } else {
-                // Active: Show calculated progress opacity
-                img.style.opacity = baseOpacity;
-            }
+            if (secondsInactive > 60) { img.style.opacity = 0.2; } 
+            else if (secondsInactive > 30) { img.style.opacity = baseOpacity * 0.7; img.classList.add('jyoti-flicker'); } 
+            else { img.style.opacity = baseOpacity; }
         }
 
-        // --- INPUT HANDLERS ---
         document.getElementById('jaapArea').addEventListener('input', (e) => {
-            resetActivity(); 
-            let txt = e.target.value; const m = config.mantra.trim();
+            resetActivity(); let txt = e.target.value; const m = config.mantra.trim();
             if(config.transEnable && config.transScript) {
                 const reg = new RegExp(escapeRegExp(m)+"(?=\\s|$|[.,!])", 'gi');
-                if(reg.test(txt)) {
-                    let s = e.target.selectionStart; txt = txt.replace(reg, config.transScript);
-                    e.target.value = txt; e.target.selectionStart = e.target.selectionEnd = s;
-                }
+                if(reg.test(txt)) { let s = e.target.selectionStart; txt = txt.replace(reg, config.transScript); e.target.value = txt; e.target.selectionStart = e.target.selectionEnd = s; }
             }
             let pat = escapeRegExp(m); if(config.transEnable && config.transScript) pat += "|"+escapeRegExp(config.transScript);
             const matches = txt.match(new RegExp(pat, 'gi'));
             if(matches && matches.length > appData.count) playSound();
-            appData.count = matches ? matches.length : 0; appData.text = txt;
-            updateStats(); saveState();
+            appData.count = matches ? matches.length : 0; appData.text = txt; updateStats(); saveState();
         });
 
         function tap() {
-            const n = Date.now(); if(n-lastTap < TAP_LIMIT) return; lastTap=n;
-            resetActivity(); 
-            const sep = appData.text.length>0?" ":"";
-            const add = (config.transEnable && config.transScript) ? config.transScript : config.mantra;
+            const n = Date.now(); if(n-lastTap < TAP_LIMIT) return; lastTap=n; resetActivity();
+            const sep = appData.text.length>0?" ":""; const add = (config.transEnable && config.transScript) ? config.transScript : config.mantra;
             appData.text += sep + add; document.getElementById('jaapArea').value=appData.text;
-            appData.count++; playSound();
-            const b=document.getElementById('tapBtn'); b.classList.add('tapped'); setTimeout(()=>b.classList.remove('tapped'),100);
+            appData.count++; playSound(); const b=document.getElementById('tapBtn'); b.classList.add('tapped'); setTimeout(()=>b.classList.remove('tapped'),100);
             updateStats(); saveState();
         }
-        
+
         document.getElementById('ishtaInput').addEventListener('change', function() {
             readImg(this, (result) => {
-                 appData.ishtaImg = result;
-                 const img = document.getElementById('ishtaImageDisplay');
-                 img.src = result; img.style.display = 'block';
-                 
-                 // Reset the 5-second bright timer on new upload
-                 darshanModeActive = false;
-                 img.style.opacity = 1.0;
-                 setTimeout(() => { darshanModeActive = true; }, 5000);
-
-                 saveState(); resetActivity();
-                 showToast("Ishta Devata Set 🙏");
+                 appData.ishtaImg = result; const img = document.getElementById('ishtaImageDisplay');
+                 img.src = result; img.style.display = 'block'; darshanModeActive = false; img.style.opacity = 1.0;
+                 setTimeout(() => { darshanModeActive = true; }, 5000); saveState(); resetActivity(); showToast("Ishta Devata Set 🙏");
             });
         });
 
-        // STANDARD FUNCTIONS
         document.addEventListener('keyup', (e)=>{ if(isClicker && (e.code==='Space'||e.code==='Enter')) {e.preventDefault(); tap();} });
         document.addEventListener('keydown', (e)=>{ if(isClicker && e.code==='Space') e.preventDefault(); });
         document.getElementById('tapBtn').addEventListener('pointerup', (e)=>{ e.preventDefault(); tap(); });
