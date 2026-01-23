@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Targeted Mala Sadhana</title>
+    <style>
+        :root {
+            --primary: #ff9933; /* Saffron */
+            --bg: #fffbf5;      /* Warm White */
+            --text: #4e342e;    /* Dark Wood */
+            --bead-empty: #d7ccc8; 
+            --bead-full: #d84315;  
+            --error: #d32f2f;
+            --success: #2e7d32;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- Top Configuration Bar --- */
+        .config-bar {
+            width: 100%;
+            background: white;
+            padding: 15px 0;
+            border-bottom: 2px solid var(--primary);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+            align-items: flex-end; /* Align inputs to bottom */
+            gap: 20px;
+            flex-wrap: wrap;
+            z-index: 10;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: var(--bead-full);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            color: var(--text);
+        }
+
+        input:focus, select:focus { border-color: var(--primary); }
+
+        .mala-conversion-hint {
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        /* --- MALA VISUALIZER SECTION --- */
+        .mala-wrapper {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin: 30px 0;
+        }
+
+        .mala-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+        }
+
+        .bead {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: var(--bead-empty);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: background-color 0.2s ease-in;
+            box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .guru-bead {
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 22px;
+            height: 22px;
+            background-color: var(--text);
+            border-radius: 50%;
+            z-index: 5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .bead.active {
+            background-color: var(--bead-full);
+            box-shadow: 0 0 5px var(--primary);
+        }
+
+        /* Center Text showing Progress */
+        .center-stats {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            width: 200px;
+        }
+
+        .rounds-count {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+        }
+        
+        .rounds-target {
+            font-size: 1.2rem;
+            color: #888;
+            font-weight: 600;
+        }
+
+        .rounds-label { 
+            font-size: 0.8rem; 
+            opacity: 0.8; 
+            margin-top: 5px; 
+            text-transform: uppercase;
+        }
+
+        /* --- Bottom Section --- */
+        .total-counter-display {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        .total-number { font-weight: bold; color: var(--text); }
+        .remaining-number { font-size: 0.9rem; color: #666; margin-left: 10px;}
+
+        .board-container {
+            flex-grow: 1;
+            width: 90%;
+            max-width: 800px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 200px;
+            position: relative;
+        }
+
+        textarea {
+            flex-grow: 1;
+            width: 100%;
+            border: 2px solid rgba(255, 153, 51, 0.3);
+            background: #fff;
+            padding: 20px;
+            font-size: 1.2rem;
+            line-height: 1.8rem;
+            color: #333;
+            border-radius: 12px;
+            resize: none;
+            outline: none;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        textarea:focus { border-color: var(--primary); }
+
+        /* --- Anti-Cheat Warning --- */
+        #warning-toast {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--error);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 100;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        #warning-toast.show { opacity: 1; }
+
+        .controls {
+            display: flex; justify-content: flex-end; margin-top: 10px;
+        }
+
+        button {
+            background: white; border: 1px solid #ccc; padding: 8px 16px;
+            border-radius: 4px; cursor: pointer; transition: all 0.2s;
+        }
+        button:hover { background: #ffe0b2; border-color: var(--primary); }
+
+    </style>
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+    <div class="config-bar">
+        <div class="input-group">
+            <label for="mantraInput">Mantra</label>
+            <input type="text" id="mantraInput" style="width: 150px;" value="Ram">
+        </div>
+
+        <div class="input-group">
+            <label for="goalSelect">Goal Preset</label>
+            <select id="goalSelect">
+                <option value="108">1 Mala (108)</option>
+                <option value="1100">11 Malas (~1.1k)</option>
+                <option value="2100">21 Malas (~2.2k)</option>
+                <option value="11000">100 Malas (11k)</option>
+                <option value="custom">Custom...</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="targetInput">Total Target</label>
+            <input type="number" id="targetInput" style="width: 100px;" value="108">
+            <div id="malaConversionHint" class="mala-conversion-hint">= 1 Mala</div>
+        </div>
+    </div>
+
+    <div class="mala-wrapper">
+        <div class="mala-container" id="malaContainer">
+            <div class="guru-bead"></div>
+            </div>
+
+        <div class="center-stats">
+            <div>
+                <span class="rounds-count" id="roundsCount">0</span>
+                <span class="rounds-target" id="roundsTarget">/ 1</span>
+            </div>
+            <div class="rounds-label">Malas Completed</div>
+        </div>
+    </div>
+
+    <div class="total-counter-display">
+        Total Count: <span class="total-number" id="totalCount">0</span>
+        <span class="remaining-number" id="remainingCount">(108 left)</span>
+    </div>
+
+    <div class="board-container">
+        <div id="warning-toast">⚠️ No shortcuts on the path to devotion. Type manually.</div>
+        
+        <textarea id="jaapArea" placeholder="Begin your typing Sadhana here..."></textarea>
+        
+        <div class="controls">
+            <button id="clearBtn">Reset Sadhana</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Elements ---
+        const mantraInput = document.getElementById('mantraInput');
+        const jaapArea = document.getElementById('jaapArea');
+        const goalSelect = document.getElementById('goalSelect');
+        const targetInput = document.getElementById('targetInput');
+        const conversionHint = document.getElementById('malaConversionHint');
+        
+        // Stats Elements
+        const totalCountDisplay = document.getElementById('totalCount');
+        const remainingCountDisplay = document.getElementById('remainingCount');
+        const roundsCountDisplay = document.getElementById('roundsCount');
+        const roundsTargetDisplay = document.getElementById('roundsTarget');
+        const malaContainer = document.getElementById('malaContainer');
+        const warningToast = document.getElementById('warning-toast');
+        const clearBtn = document.getElementById('clearBtn');
+
+        // --- Constants & State ---
+        const MALA_SIZE = 108;
+        const KEYS = { TEXT: 'jaap_text_v6', MANTRA: 'jaap_mantra_v6', TARGET: 'jaap_target_v6' };
+        let beadsElements = []; 
+
+        // --- Initialization ---
+        window.onload = () => {
+            generateMalaBeads();
+            
+            // Load saved settings
+            mantraInput.value = localStorage.getItem(KEYS.MANTRA) || "Ram";
+            jaapArea.value = localStorage.getItem(KEYS.TEXT) || "";
+            
+            const savedTarget = localStorage.getItem(KEYS.TARGET) || "108";
+            targetInput.value = savedTarget;
+            
+            // Sync dropdown if matches
+            syncDropdown(savedTarget);
+            
+            calculate();
+        };
+
+        // --- ANTI-CHEAT ---
+        jaapArea.addEventListener('paste', (e) => { e.preventDefault(); showWarning(); });
+        jaapArea.addEventListener('drop', (e) => { e.preventDefault(); showWarning(); });
+
+        function showWarning() {
+            warningToast.classList.add('show');
+            setTimeout(() => { warningToast.classList.remove('show'); }, 3000);
+        }
+
+        // --- MALA GENERATION ---
+        function generateMalaBeads() {
+            const radius = 140; 
+            const centerX = 150; 
+            const centerY = 150;
+
+            for (let i = 0; i < MALA_SIZE; i++) {
+                const bead = document.createElement('div');
+                bead.classList.add('bead');
+                // Start from top (-PI/2)
+                const angle = (i / MALA_SIZE) * 2 * Math.PI - (Math.PI / 2);
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+                bead.style.left = `${x}px`;
+                bead.style.top = `${y}px`;
+                malaContainer.appendChild(bead);
+                beadsElements.push(bead); 
+            }
+        }
+
+        // --- Logic & Math ---
+        function escapeRegExp(string) { return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+        function calculate() {
+            // 1. Get Inputs
+            const mantra = mantraInput.value.trim();
+            const content = jaapArea.value;
+            let targetCount = parseInt(targetInput.value);
+            if(isNaN(targetCount) || targetCount < 1) targetCount = 108;
+
+            // 2. Count Occurrences
+            let totalTyped = 0;
+            if (mantra && content) {
+                try {
+                    const regex = new RegExp(escapeRegExp(mantra), 'gi');
+                    const matches = content.match(regex);
+                    totalTyped = matches ? matches.length : 0;
+                } catch (e) { console.error(e); }
+            }
+
+            // 3. Stats Calculation
+            const completedMalas = Math.floor(totalTyped / MALA_SIZE);
+            const targetMalas = (targetCount / MALA_SIZE).toFixed(1); // 1 decimal place (e.g. 10.5)
+            const remaining = targetCount - totalTyped;
+
+            // 4. Update UI: Center Circle
+            roundsCountDisplay.innerText = completedMalas;
+            // Round the target display nicely (remove .0 if not needed)
+            const prettyTarget = targetMalas.endsWith('.0') ? parseInt(targetMalas) : targetMalas;
+            roundsTargetDisplay.innerText = `/ ${prettyTarget}`;
+
+            // 5. Update UI: Bottom Stats
+            totalCountDisplay.innerText = totalTyped.toLocaleString();
+            
+            if (remaining <= 0) {
+                remainingCountDisplay.innerText = "(Goal Reached! 🎉)";
+                remainingCountDisplay.style.color = "var(--success)";
+            } else {
+                remainingCountDisplay.innerText = `(${remaining.toLocaleString()} left)`;
+                remainingCountDisplay.style.color = "#666";
+            }
+
+            // 6. Update UI: Visual Beads
+            let currentBeadPosition = totalTyped % MALA_SIZE;
+            // If strictly a multiple of 108, light up all beads
+            if (totalTyped > 0 && currentBeadPosition === 0) currentBeadPosition = MALA_SIZE;
+            updateBeadVisuals(currentBeadPosition);
+
+            // 7. Update UI: Input Hint
+            updateConversionHint(targetCount);
+
+            // 8. Save
+            localStorage.setItem(KEYS.TEXT, content);
+            localStorage.setItem(KEYS.MANTRA, mantra);
+            localStorage.setItem(KEYS.TARGET, targetCount);
+        }
+
+        function updateBeadVisuals(currentPos) {
+            beadsElements.forEach((bead, index) => {
+                if (index < currentPos) {
+                    bead.classList.add('active');
+                } else {
+                    bead.classList.remove('active');
+                }
+            });
+        }
+
+        function updateConversionHint(count) {
+            const malas = (count / MALA_SIZE).toFixed(1);
+            const pretty = malas.endsWith('.0') ? parseInt(malas) : malas;
+            conversionHint.innerText = `= ${pretty} Malas`;
+        }
+
+        function syncDropdown(val) {
+            let found = false;
+            for(let i=0; i<goalSelect.options.length; i++){
+                if(goalSelect.options[i].value == val){
+                    goalSelect.selectedIndex = i;
+                    found = true;
+                    break;
+                }
+            }
+            if(!found) goalSelect.value = 'custom';
+        }
+
+        // --- Event Listeners ---
+        
+        // Typing
+        jaapArea.addEventListener('input', calculate);
+        
+        // Changing Mantra
+        mantraInput.addEventListener('input', calculate);
+
+        // Changing Target (Dropdown)
+        goalSelect.addEventListener('change', () => {
+            if(goalSelect.value !== 'custom') {
+                targetInput.value = goalSelect.value;
+                calculate();
+            }
+        });
+
+        // Changing Target (Manual Input)
+        targetInput.addEventListener('input', () => {
+            goalSelect.value = 'custom';
+            calculate();
+        });
+
+        // Clear
+        clearBtn.addEventListener('click', () => {
+            if(confirm("Reset your Sadhana count to zero?")) {
+                jaapArea.value = "";
+                calculate();
+                jaapArea.focus();
+            }
+        });
+
+    </script>
+</body>
+</html>
