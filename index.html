@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#ff9933">
-    <title>Sadhana: Jholi Master</title>
+    <title>Sadhana: Adhyatmik Edition</title>
 
     <link rel="manifest" href="manifest.json">
     <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
@@ -89,9 +89,10 @@
             width: 200px; height: 200px; border-radius: 50%; background: var(--board-bg);
             border: 4px solid var(--primary); color: var(--primary); font-size: 1.5rem; font-weight: bold;
             display: flex; justify-content: center; align-items: center; cursor: pointer;
-            box-shadow: var(--shadow); transition: transform 0.1s;
+            box-shadow: var(--shadow); transition: transform 0.1s, background 0.1s;
         }
-        .tap-button:active { transform: scale(0.95); background: var(--primary); color: #fff; }
+        /* Both :active (mouse) and .active-press (keyboard) trigger this style */
+        .tap-button:active, .tap-button.active-press { transform: scale(0.95); background: var(--primary); color: #fff; }
 
         /* --- 6. MODALS --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 2000; }
@@ -127,16 +128,16 @@
 <body>
 
     <div class="config-bar">
-        <button class="icon-btn jholi-btn" id="jholiBtn">🎒 My Jholi</button>
-        <div style="flex-grow:1"></div> <button class="icon-btn" id="modeBtn" title="Mode Switch">⌨️</button>
-        <button class="icon-btn" id="muteBtn" title="Mute/Unmute">🔊</button>
-        <button class="icon-btn" id="settingsBtn" title="Configuration">⚙️</button>
-        <button class="icon-btn" id="themeBtn" title="Theme">🌑</button>
+        <button class="icon-btn jholi-btn" id="jholiBtn">🎒 Meri Jholi</button>
+        <div style="flex-grow:1"></div> <button class="icon-btn" id="modeBtn" title="Vidhi (Mode)">⌨️</button>
+        <button class="icon-btn" id="muteBtn" title="Naad (Sound)">🔊</button>
+        <button class="icon-btn" id="settingsBtn" title="Sankalpa (Settings)">⚙️</button>
+        <button class="icon-btn" id="themeBtn" title="Drishti (Theme)">🌑</button>
     </div>
 
     <div class="time-stats">
-        <div class="stat-item"><span>Active Focus</span><span class="stat-val" id="activeTimeDisplay">0m</span></div>
-        <div class="stat-item"><span>Today's Count</span><span class="stat-val" id="todayCountDisplay">0</span></div>
+        <div class="stat-item"><span>Ekagrata (Focus)</span><span class="stat-val" id="activeTimeDisplay">0m</span></div>
+        <div class="stat-item"><span>Aaj ki Sankhya</span><span class="stat-val" id="todayCountDisplay">0</span></div>
     </div>
 
     <div class="visualizer-container">
@@ -145,16 +146,16 @@
             <img id="ishtaImageDisplay" src="" style="display:none;"> 
             <div class="stats-text">
                 <div class="rounds-count" id="roundsCount">0</div>
-                <div style="font-size:0.6rem; opacity:0.8; font-weight:bold;">MALAS</div>
+                <div style="font-size:0.6rem; opacity:0.8; font-weight:bold;">MALA</div>
             </div>
         </div>
     </div>
 
     <div class="board-container">
-        <textarea id="jaapArea" placeholder="Start your Sadhana..."></textarea>
+        <textarea id="jaapArea" placeholder="Likith Japa Aarambh Karein..."></textarea>
         <div class="clicker-view" id="clickerView">
-            <div class="tap-button" id="tapBtn">TAP</div>
-            <div style="margin-top:20px; opacity:0.7;">Tap or Press Spacebar</div>
+            <div class="tap-button" id="tapBtn">JAPA</div>
+            <div style="margin-top:20px; opacity:0.7;">Sparsh Karein (Tap) or Spacebar</div>
         </div>
     </div>
 
@@ -165,77 +166,78 @@
             <div class="profile-card">
                 <div class="profile-icon">👤</div>
                 <div class="profile-details">
-                    <div class="profile-name" id="userNameDisplay">Guest Devotee</div>
-                    <div class="profile-status" id="userStatusDisplay">Local Profile</div>
+                    <div class="profile-name" id="userNameDisplay">Abhyasi (Guest)</div>
+                    <div class="profile-status" id="userStatusDisplay">Sthaniya (Local)</div>
                 </div>
-                <button class="btn-outline" id="loginActionBtn" onclick="handleLogin()">Login</button>
+                <button class="btn-outline" id="loginActionBtn" onclick="handleLogin()">Pravesh (Login)</button>
             </div>
         </div>
 
         <div class="jholi-section">
-            <h4 style="margin:0 0 10px 0;">📅 My Calendar & Stats</h4>
+            <h4 style="margin:0 0 10px 0;">📅 Lekha Jokha (History)</h4>
             <div class="hist-total" style="font-size:1.2rem; font-weight:bold; color:var(--primary); margin-bottom:5px;">
-                Grand Total: <span id="grandTotalDisplay">0</span>
+                Maha Yog (Total): <span id="grandTotalDisplay">0</span>
             </div>
             <div class="hist-list" id="histList">
-                <div class="hist-item"><span>No history yet</span><span>--</span></div>
+                <div class="hist-item"><span>Empty</span><span>--</span></div>
             </div>
         </div>
 
         <div class="jholi-section">
-            <h4 style="margin:0 0 10px 0;">💾 Data Bank</h4>
+            <h4 style="margin:0 0 10px 0;">💾 Yantra Parivartan (Sync/Backup)</h4>
             <div class="data-grid">
-                <button class="modal-btn btn-outline" id="backupBtn">⬇️ Backup</button>
-                <button class="modal-btn btn-outline" id="restoreBtn">⬆️ Restore</button>
+                <button class="modal-btn btn-outline" id="backupBtn">⬇️ Sanchay (Save)</button>
+                <button class="modal-btn btn-outline" id="restoreBtn">⬆️ Prapti (Restore)</button>
             </div>
         </div>
         
-        <button class="modal-btn btn-p" id="printSlipBtn">🖨️ Print Deposit Slip</button>
+        <button class="modal-btn btn-p" id="printSlipBtn">🖨️ Naam Daan Parchi (PDF)</button>
 
-        <button class="modal-btn btn-s" onclick="document.getElementById('jholiModal').style.display='none'">Close Jholi</button>
+        <button class="modal-btn btn-s" onclick="document.getElementById('jholiModal').style.display='none'">Band Karein (Close)</button>
     </div></div>
 
 
     <div class="modal-overlay" id="settingsModal"><div class="modal-box">
-        <h3>⚙️ Configuration</h3>
+        <h3>⚙️ Sankalpa (Settings)</h3>
         
         <div class="jholi-section">
-            <label>🖼️ Ishta Devata Image</label>
+            <label>🖼️ Ishta Devata (Image)</label>
             <div class="file-upload"><input type="file" id="ishtaInput" accept="image/*"></div>
         </div>
 
         <div class="jholi-section">
-            <label>🔊 Sound Settings</label>
-            <div style="font-size:0.8rem; margin-bottom:5px; opacity:0.7;">Upload MP3 or use default Ram.mp3</div>
+            <label>🔊 Naad (Sound)</label>
+            <div style="font-size:0.8rem; margin-bottom:5px; opacity:0.7;">MP3 Upload (Default: Ram.mp3)</div>
             <div class="file-upload"><input type="file" id="soundInput" accept="audio/mp3,audio/wav"></div>
         </div>
 
         <div class="input-row"><label style="width:60px">Mantra:</label><input type="text" id="mantraInput" placeholder="Ram"></div>
-        <div class="input-row"><label style="width:60px">Target:</label><input type="number" id="targetInput" placeholder="108"></div>
-        <div class="input-row"><label style="width:60px">Script:</label><input type="text" id="transDest" placeholder="राम"><input type="checkbox" id="transEnable"></div>
+        <div class="input-row"><label style="width:60px">Lakshya:</label><input type="number" id="targetInput" placeholder="108"></div>
+        <div class="input-row"><label style="width:60px">Lipi:</label><input type="text" id="transDest" placeholder="राम"><input type="checkbox" id="transEnable"> Sakriya (Enable)</div>
         
-        <button class="modal-btn btn-p" onclick="saveSettings()">Save Configuration</button>
+        <button class="modal-btn btn-p" onclick="saveSettings()">Sankalpa Lein (Save)</button>
     </div></div>
 
     <div class="modal-overlay" id="backupPassModal"><div class="modal-box">
-        <h3>🔐 Create Backup Password</h3>
-        <input type="password" id="backupPass" placeholder="Password" style="width:90%; padding:10px; margin:10px 0;">
+        <h3>🔐 Suraksha (Security)</h3>
+        <p style="font-size:0.8rem">Create a password to secure your file.</p>
+        <input type="password" id="backupPass" placeholder="Gupt Shabd (Password)" style="width:90%; padding:10px; margin:10px 0;">
         <button class="modal-btn btn-p" id="doBackupBtn">Download File</button>
-        <button class="modal-btn btn-s" onclick="document.getElementById('backupPassModal').style.display='none'">Cancel</button>
+        <button class="modal-btn btn-s" onclick="document.getElementById('backupPassModal').style.display='none'">Radd Karein (Cancel)</button>
     </div></div>
     <div class="modal-overlay" id="restorePassModal"><div class="modal-box">
-        <h3>📂 Select Backup File</h3>
+        <h3>📂 Purnah Prapti (Restore)</h3>
         <input type="file" id="restoreFile" accept=".json" style="margin-bottom:10px;">
-        <input type="password" id="restorePass" placeholder="Enter Password" style="width:90%; padding:10px; margin:10px 0;">
+        <input type="password" id="restorePass" placeholder="Gupt Shabd (Password)" style="width:90%; padding:10px; margin:10px 0;">
         <button class="modal-btn btn-p" id="doRestoreBtn">Restore Data</button>
-        <button class="modal-btn btn-s" onclick="document.getElementById('restorePassModal').style.display='none'">Cancel</button>
+        <button class="modal-btn btn-s" onclick="document.getElementById('restorePassModal').style.display='none'">Radd Karein (Cancel)</button>
     </div></div>
     <div class="modal-overlay" id="printModal"><div class="modal-box">
-        <h3>🖨️ Slip Details</h3>
-        <div class="input-row"><input type="text" id="devName" placeholder="Your Name"></div>
-        <div class="input-row"><input type="text" id="ardasNote" placeholder="Ardas / Wish"></div>
-        <button class="modal-btn btn-p" id="doPrintBtn">Generate PDF</button>
-        <button class="modal-btn btn-s" onclick="document.getElementById('printModal').style.display='none'">Cancel</button>
+        <h3>🖨️ Parchi Vivaran</h3>
+        <div class="input-row"><input type="text" id="devName" placeholder="Sadhak Name"></div>
+        <div class="input-row"><input type="text" id="ardasNote" placeholder="Ardas / Prarthana"></div>
+        <button class="modal-btn btn-p" id="doPrintBtn">PDF Banayein</button>
+        <button class="modal-btn btn-s" onclick="document.getElementById('printModal').style.display='none'">Radd Karein</button>
     </div></div>
 
     <script>
@@ -257,18 +259,26 @@
             const statD = document.getElementById('userStatusDisplay');
             const btn = document.getElementById('loginActionBtn');
             if (user) {
-                nameD.innerText = user.user_metadata.full_name || "Devotee";
+                nameD.innerText = user.user_metadata.full_name || "Sadhak";
                 statD.innerText = "Logged In (Netlify)";
-                btn.innerText = "Logout";
+                btn.innerText = "Nikas (Logout)";
                 btn.onclick = () => window.netlifyIdentity.logout();
             } else {
-                nameD.innerText = "Guest Devotee";
-                statD.innerText = "Local Profile";
-                btn.innerText = "Login / Signup";
-                btn.onclick = () => window.netlifyIdentity.open();
+                nameD.innerText = "Abhyasi (Guest)";
+                statD.innerText = "Sthaniya (Local)";
+                btn.innerText = "Pravesh (Login)";
+                // FIX: Close Jholi modal when Login clicked
+                btn.onclick = () => handleLogin();
             }
         }
-        function handleLogin() { if(currentUser) window.netlifyIdentity.logout(); else window.netlifyIdentity.open(); }
+        
+        function handleLogin() { 
+            // 1. Close the Jholi Modal first so user sees the popup
+            document.getElementById('jholiModal').style.display='none';
+            // 2. Trigger Auth
+            if(currentUser) window.netlifyIdentity.logout(); 
+            else window.netlifyIdentity.open(); 
+        }
 
         // -----------------------------------------------------
         // 2. STATE & CONFIG
@@ -281,9 +291,9 @@
         let history = []; 
 
         let lastActivity = 0;
-        let soundEnabled = true; // Mute state
-        let audioSrc = "ram.mp3"; // Default file
-        let audioObj = null; // The Audio object
+        let soundEnabled = true; 
+        let audioSrc = "ram.mp3"; 
+        let audioObj = null; 
         let isClicker = false;
 
         // -----------------------------------------------------
@@ -292,18 +302,10 @@
         window.addEventListener('load', () => {
             loadState();
             checkNewDay(); 
-            
-            // Canvas
-            const c = document.getElementById('mandalaCanvas');
-            // Init mandala logic here (simplified for this snippet)
             updateStats();
             applyTheme();
-
-            // Loops
             setInterval(checkActiveTime, 1000);
             startJyotiLoop();
-
-            // SW
             if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
         });
 
@@ -317,12 +319,10 @@
             if(c) config=JSON.parse(c);
             if(h) history=JSON.parse(h);
 
-            // UI Restore
             document.getElementById('mantraInput').value = config.mantra;
             document.getElementById('jaapArea').value = appData.text;
             if(appData.ishtaImg) document.getElementById('ishtaImageDisplay').src = appData.ishtaImg;
-            if(appData.customSound) audioSrc = appData.customSound; // Load custom sound
-            
+            if(appData.customSound) audioSrc = appData.customSound; 
             updateStats();
         }
 
@@ -367,12 +367,10 @@
         // --- SOUND LOGIC ---
         function playTapSound() {
             if(!soundEnabled) return;
-            // Create audio object if not exists or if source changed
             if(!audioObj || audioObj.src !== audioSrc) {
                 audioObj = new Audio(audioSrc);
                 audioObj.volume = 0.5;
             }
-            // Reset and play
             audioObj.currentTime = 0;
             audioObj.play().catch(e => console.log("Audio play failed (interaction needed)", e));
         }
@@ -380,7 +378,6 @@
         document.getElementById('muteBtn').onclick = function() {
             soundEnabled = !soundEnabled;
             this.innerText = soundEnabled ? "🔊" : "🔇";
-            // showToast(soundEnabled ? "Sound On" : "Muted");
         };
 
         // --- INPUTS ---
@@ -395,7 +392,6 @@
         document.getElementById('jaapArea').addEventListener('input', (e) => {
             registerActivity();
             let txt = e.target.value; const m = config.mantra.trim();
-            // Transliteration
             if(config.transEnable && config.transScript) {
                 const r = new RegExp(escapeRegExp(m)+"(?=\\s|$|[.,!])", 'gi');
                 if(r.test(txt)) { 
@@ -403,7 +399,6 @@
                     e.target.value = txt; e.target.selectionStart=s; e.target.selectionEnd=s;
                 }
             }
-            // Count Check
             let pat = escapeRegExp(m); if(config.transEnable && config.transScript) pat += "|"+escapeRegExp(config.transScript);
             const matches = txt.match(new RegExp(pat, 'gi'));
             
@@ -423,68 +418,51 @@
             const b=e.target; b.style.transform="scale(0.9)"; setTimeout(()=>b.style.transform="scale(1)",100);
         });
 
-        // Spacebar Logic (Manasik Mode)
+        // Spacebar Logic (Manasik Mode) - UPDATED WITH VISUAL FEEDBACK
         document.addEventListener('keyup', (e) => {
             if(isClicker && (e.code === 'Space' || e.code === 'Enter')) {
                 e.preventDefault();
                 const sep = appData.text.length>0?" ":"";
                 const add = (config.transEnable && config.transScript) ? config.transScript : config.mantra;
                 appData.text += sep + add; 
-                // Note: We don't update textarea VISUALLY in clicker mode to save perf, but store it.
                 handleCountInput();
+                
+                // VISUAL FEEDBACK FOR SPACEBAR
+                const btn = document.getElementById('tapBtn');
+                btn.classList.add('active-press'); // Add class
+                setTimeout(() => btn.classList.remove('active-press'), 100); // Remove after 100ms
             }
         });
-        // Prevent scroll on spacebar
         document.addEventListener('keydown', (e) => { if(isClicker && e.code==='Space') e.preventDefault(); });
 
         // -----------------------------------------------------
         // 5. JHOLI & SETTINGS LOGIC
         // -----------------------------------------------------
         
-        // Jholi Button - Populates Stats then opens
         document.getElementById('jholiBtn').onclick = () => {
-            // Update Grand Total
             let grand = appData.count;
             history.forEach(h => grand += h.count);
             document.getElementById('grandTotalDisplay').innerText = grand.toLocaleString();
 
-            // Populate History List
             const list = document.getElementById('histList');
             let html = "";
-            if(appData.count > 0) {
-                html += `<div class="hist-item" style="font-weight:bold; color:var(--primary)"><span>Today</span><span>${appData.count}</span></div>`;
-            }
-            if(history.length === 0 && appData.count === 0) {
-                html = `<div class="hist-item"><span>No history yet</span><span>Start Chanting</span></div>`;
-            } else {
-                history.forEach(h => {
-                    html += `<div class="hist-item"><span>${h.date}</span><span>${h.count}</span></div>`;
-                });
-            }
+            if(appData.count > 0) html += `<div class="hist-item" style="font-weight:bold; color:var(--primary)"><span>Aaj (Today)</span><span>${appData.count}</span></div>`;
+            if(history.length === 0 && appData.count === 0) html = `<div class="hist-item"><span>Shunya (Empty)</span><span>--</span></div>`;
+            else history.forEach(h => { html += `<div class="hist-item"><span>${h.date}</span><span>${h.count}</span></div>`; });
             list.innerHTML = html;
-
             document.getElementById('jholiModal').style.display='flex';
         };
 
         // File Uploads
         document.getElementById('soundInput').onchange = function() {
             const r = new FileReader();
-            r.onload = e => { 
-                appData.customSound = e.target.result; 
-                audioSrc = appData.customSound;
-                saveState(); alert("Sound Updated!");
-            };
+            r.onload = e => { appData.customSound = e.target.result; audioSrc = appData.customSound; saveState(); alert("Naad Updated!"); };
             r.readAsDataURL(this.files[0]);
         };
 
         document.getElementById('ishtaInput').onchange = function() {
             const r = new FileReader();
-            r.onload = e => { 
-                appData.ishtaImg = e.target.result; 
-                document.getElementById('ishtaImageDisplay').src = appData.ishtaImg;
-                document.getElementById('ishtaImageDisplay').style.display='block';
-                saveState();
-            };
+            r.onload = e => { appData.ishtaImg = e.target.result; document.getElementById('ishtaImageDisplay').src = appData.ishtaImg; saveState(); };
             r.readAsDataURL(this.files[0]);
         };
 
@@ -497,7 +475,7 @@
             saveState(); updateStats();
         }
 
-        // Backup/Restore Logic (Same as before, just mapped to buttons)
+        // Backup/Restore Logic
         document.getElementById('backupBtn').onclick = () => { document.getElementById('jholiModal').style.display='none'; document.getElementById('backupPassModal').style.display='flex'; };
         document.getElementById('restoreBtn').onclick = () => { document.getElementById('jholiModal').style.display='none'; document.getElementById('restorePassModal').style.display='flex'; };
 
@@ -508,7 +486,7 @@
         async function decD(obj, pass) { const k=await getK(pass), aes=await derK(k, new Uint8Array(obj.salt), ["decrypt"]), d=await window.crypto.subtle.decrypt({name:"AES-GCM",iv:new Uint8Array(obj.iv)}, aes, new Uint8Array(obj.content)); return new TextDecoder().decode(d); }
 
         document.getElementById('doBackupBtn').onclick = async () => {
-            const p = document.getElementById('backupPass').value; if(!p) return alert("Password needed");
+            const p = document.getElementById('backupPass').value; if(!p) return alert("Gupt Shabd (Password) Required");
             const pl = JSON.stringify({d:appData, c:config, h:history});
             try { const e = await encD(pl, p); const a = document.createElement("a"); a.href=URL.createObjectURL(new Blob([JSON.stringify(e)],{type:'json'})); a.download="sadhana.json"; a.click(); document.getElementById('backupPassModal').style.display='none'; } catch(e) { alert("Error"); }
         };
@@ -516,7 +494,7 @@
             const f = document.getElementById('restoreFile').files[0], p = document.getElementById('restorePass').value;
             if(!f || !p) return alert("Missing info");
             const r = new FileReader(); r.onload = async(e) => {
-                try { const s = await decD(JSON.parse(e.target.result), p); const o = JSON.parse(s); appData = o.d; config = o.c; history = o.h; if(appData.activeSeconds===undefined) appData.activeSeconds=0; saveState(); loadState(); alert("Restored!"); location.reload(); } catch(er) { alert("Invalid Password"); }
+                try { const s = await decD(JSON.parse(e.target.result), p); const o = JSON.parse(s); appData = o.d; config = o.c; history = o.h; if(appData.activeSeconds===undefined) appData.activeSeconds=0; saveState(); loadState(); alert("Purnah Prapti Safal (Restored)!"); location.reload(); } catch(er) { alert("Wrong Password"); }
             }; r.readAsText(f);
         };
 
@@ -525,12 +503,12 @@
         document.getElementById('doPrintBtn').onclick = () => {
             const w = window.open('', '', 'width=600,height=600');
             w.document.write(`<html><body style="font-family:serif; text-align:center; border:5px double orange; padding:20px;">
-                <h1>|| Shree Ram ||</h1><h2>Naam Dhan Deposit Slip</h2>
-                <p><b>Devotee:</b> ${document.getElementById('devName').value || "Guest"}</p>
-                <p><b>Count:</b> ${appData.count}</p>
-                <p><b>Date:</b> ${new Date().toLocaleDateString()}</p>
+                <h1>|| Shree Ram ||</h1><h2>Naam Daan Parchi</h2>
+                <p><b>Sadhak:</b> ${document.getElementById('devName').value || "Guest"}</p>
+                <p><b>Sankhya (Count):</b> ${appData.count}</p>
+                <p><b>Dinaank:</b> ${new Date().toLocaleDateString()}</p>
                 <p><i>${document.getElementById('ardasNote').value}</i></p>
-                <br><br>____________________<br>Signature
+                <br><br>____________________<br>Hastakshar
             </body></html>`);
             w.document.close();
         };
