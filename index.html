@@ -2,465 +2,564 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Targeted Mala Sadhana</title>
-    <style>
-        :root {
-            --primary: #ff9933; /* Saffron */
-            --bg: #fffbf5;      /* Warm White */
-            --text: #4e342e;    /* Dark Wood */
-            --bead-empty: #d7ccc8; 
-            --bead-full: #d84315;  
-            --error: #d32f2f;
-            --success: #2e7d32;
-        }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ff9933">
+    <title>Sadhana: Jholi Master</title>
 
+    <link rel="manifest" href="manifest.json">
+    <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+    <style>
+        /* --- 1. THEME VARIABLES --- */
+        :root {
+            --primary: #ff9933; --bg: #fffbf5; --text: #4e342e;
+            --board-bg: #ffffff; --board-border: rgba(255, 153, 51, 0.3);
+            --modal-bg: rgba(255, 255, 255, 0.98);
+            --shadow: 0 4px 10px rgba(0,0,0,0.1);
+            --jholi: #ef6c00; --warning: #d32f2f; --success: #2e7d32;
+        }
+        body.dark-mode {
+            --primary: #ffd700; --bg: #0f172a; --text: #e2e8f0;
+            --board-bg: #1e293b; --board-border: #ffd700;
+            --modal-bg: #1e293b; --shadow: 0 4px 20px rgba(255, 215, 0, 0.1);
+        }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            background-color: var(--bg); color: var(--text); margin: 0;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+            transition: all 0.3s ease; user-select: none; -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- Top Configuration Bar --- */
+        /* --- 2. CLEAN CONTROLS --- */
         .config-bar {
-            width: 100%;
-            background: white;
-            padding: 15px 0;
-            border-bottom: 2px solid var(--primary);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: center;
-            align-items: flex-end; /* Align inputs to bottom */
-            gap: 20px;
-            flex-wrap: wrap;
-            z-index: 10;
+            width: 100%; background: var(--board-bg); padding: 12px 0;
+            border-bottom: 1px solid var(--primary); display: flex;
+            justify-content: center; align-items: center; gap: 15px; z-index: 50;
+            box-shadow: var(--shadow);
         }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+        .icon-btn {
+            background: transparent; color: var(--text); border: 1px solid var(--text);
+            width: 44px; height: 44px; border-radius: 50%; cursor: pointer; font-size: 1.2rem;
+            display: flex; justify-content: center; align-items: center; transition: all 0.2s; opacity: 0.8;
         }
-
-        label {
-            font-size: 0.75rem;
-            font-weight: bold;
-            color: var(--bead-full);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        input, select {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            outline: none;
-            color: var(--text);
-        }
-
-        input:focus, select:focus { border-color: var(--primary); }
-
-        .mala-conversion-hint {
-            font-size: 0.8rem;
-            color: var(--primary);
-            font-weight: bold;
-            margin-top: 5px;
-        }
-
-        /* --- MALA VISUALIZER SECTION --- */
-        .mala-wrapper {
-            position: relative;
-            width: 320px;
-            height: 320px;
-            margin: 30px 0;
-        }
-
-        .mala-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-        }
-
-        .bead {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background-color: var(--bead-empty);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: background-color 0.2s ease-in;
-            box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2);
-        }
-
-        .guru-bead {
-            position: absolute;
-            top: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 22px;
-            height: 22px;
-            background-color: var(--text);
-            border-radius: 50%;
-            z-index: 5;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .bead.active {
-            background-color: var(--bead-full);
-            box-shadow: 0 0 5px var(--primary);
-        }
-
-        /* Center Text showing Progress */
-        .center-stats {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            width: 200px;
-        }
-
-        .rounds-count {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--primary);
-            line-height: 1;
-        }
+        .icon-btn:hover, .icon-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); opacity: 1; transform: scale(1.1); }
         
-        .rounds-target {
-            font-size: 1.2rem;
-            color: #888;
-            font-weight: 600;
+        /* The Big Jholi Button */
+        .jholi-btn { 
+            background: var(--jholi); color: #fff; border: none; font-weight: bold; 
+            width: auto; padding: 0 25px; border-radius: 25px; font-size: 1rem;
+            display: flex; gap: 8px; align-items: center;
         }
 
-        .rounds-label { 
-            font-size: 0.8rem; 
-            opacity: 0.8; 
-            margin-top: 5px; 
-            text-transform: uppercase;
+        /* --- 3. TIME STATS --- */
+        .time-stats {
+            display: flex; gap: 20px; font-size: 0.85rem; margin: 15px 0; opacity: 0.9;
+            background: var(--board-bg); padding: 8px 20px; border-radius: 20px; box-shadow: var(--shadow);
         }
+        .stat-item { display: flex; flex-direction: column; align-items: center; line-height: 1.1; }
+        .stat-val { font-weight: bold; color: var(--primary); font-size: 1rem;}
 
-        /* --- Bottom Section --- */
-        .total-counter-display {
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 1.1rem;
+        /* --- 4. VISUALIZER --- */
+        .visualizer-container { position: relative; width: 300px; height: 300px; margin: 10px 0; }
+        #mandalaCanvas { position: absolute; top: 0; left: 0; border-radius: 50%; z-index: 1; pointer-events: none; }
+        .center-stats {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 2; width: 120px; height: 120px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            border-radius: 50%; overflow: hidden;
+            border: 3px solid var(--primary); box-shadow: var(--shadow); background: var(--bg);
         }
-        .total-number { font-weight: bold; color: var(--text); }
-        .remaining-number { font-size: 0.9rem; color: #666; margin-left: 10px;}
+        #ishtaImageDisplay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 1; transition: opacity 2s ease; z-index: 0; }
+        .jyoti-flicker { animation: flicker 2s infinite alternate; }
+        @keyframes flicker { 0% { opacity: 0.6; } 100% { opacity: 0.3; } }
+        
+        .stats-text { position: relative; z-index: 1; text-align: center; text-shadow: 0 0 10px var(--bg); }
+        .rounds-count { font-size: 2rem; font-weight: 800; color: var(--primary); line-height: 1; }
 
-        .board-container {
-            flex-grow: 1;
-            width: 90%;
-            max-width: 800px;
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            min-height: 200px;
-            position: relative;
-        }
-
+        /* --- 5. BOARD --- */
+        .board-container { flex-grow: 1; width: 90%; max-width: 800px; position: relative; }
         textarea {
-            flex-grow: 1;
-            width: 100%;
-            border: 2px solid rgba(255, 153, 51, 0.3);
-            background: #fff;
-            padding: 20px;
-            font-size: 1.2rem;
-            line-height: 1.8rem;
-            color: #333;
-            border-radius: 12px;
-            resize: none;
-            outline: none;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
-            font-family: 'Courier New', Courier, monospace;
+            width: 100%; height: 280px; border: 2px solid var(--board-border);
+            background: var(--board-bg); color: var(--text); padding: 20px;
+            font-size: 1.2rem; border-radius: 12px; resize: none; outline: none;
+            font-family: 'Courier New', Courier, monospace; display: block;
         }
-
-        textarea:focus { border-color: var(--primary); }
-
-        /* --- Anti-Cheat Warning --- */
-        #warning-toast {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: var(--error);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-weight: bold;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-            z-index: 100;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        .clicker-view { display: none; width: 100%; flex-direction: column; align-items: center; }
+        .tap-button {
+            width: 200px; height: 200px; border-radius: 50%; background: var(--board-bg);
+            border: 4px solid var(--primary); color: var(--primary); font-size: 1.5rem; font-weight: bold;
+            display: flex; justify-content: center; align-items: center; cursor: pointer;
+            box-shadow: var(--shadow); transition: transform 0.1s;
         }
+        .tap-button:active { transform: scale(0.95); background: var(--primary); color: #fff; }
 
-        #warning-toast.show { opacity: 1; }
+        /* --- 6. MODALS --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 2000; }
+        .modal-box { background: var(--modal-bg); color: var(--text); padding: 25px; border-radius: 15px; width: 90%; max-width: 450px; text-align: center; border: 1px solid var(--primary); max-height: 85vh; overflow-y: auto; }
+        
+        /* Jholi Internal Design */
+        .jholi-section { margin-bottom: 20px; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 15px; }
+        .jholi-section:last-child { border: none; }
+        .profile-card { background: rgba(255, 153, 51, 0.1); padding: 15px; border-radius: 10px; display: flex; align-items: center; gap: 10px; text-align: left; }
+        .profile-icon { font-size: 2rem; }
+        .profile-details { flex-grow: 1; }
+        .profile-name { font-weight: bold; font-size: 1.1rem; }
+        .profile-status { font-size: 0.8rem; opacity: 0.7; }
+        
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .hist-list { text-align: left; max-height: 150px; overflow-y: auto; background: rgba(0,0,0,0.02); padding: 10px; border-radius: 8px; }
+        .hist-item { display: flex; justify-content: space-between; font-size: 0.9rem; padding: 4px 0; border-bottom: 1px dashed #ccc; }
 
-        .controls {
-            display: flex; justify-content: flex-end; margin-top: 10px;
-        }
+        .modal-btn { padding: 12px; width: 100%; margin: 5px 0; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; font-size: 1rem; }
+        .btn-p { background: var(--primary); color: #000; } 
+        .btn-s { background: #eee; color: #333; }
+        .btn-outline { background: transparent; border: 1px solid var(--text); color: var(--text); font-size: 0.9rem; padding: 8px; }
 
-        button {
-            background: white; border: 1px solid #ccc; padding: 8px 16px;
-            border-radius: 4px; cursor: pointer; transition: all 0.2s;
-        }
-        button:hover { background: #ffe0b2; border-color: var(--primary); }
-
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--warning); color: #fff; padding: 10px 20px; border-radius: 20px; opacity: 0; transition: opacity 0.3s; z-index: 3000; pointer-events: none; }
+        #toast.show { opacity: 1; }
+        
+        .file-upload { border: 1px dashed var(--text); padding: 10px; margin: 10px 0; font-size: 0.8rem; text-align: left; }
+        .input-row { display: flex; gap: 5px; margin-bottom: 10px; text-align: left; align-items: center; }
+        input { flex-grow: 1; padding: 10px; border-radius: 5px; border: 1px solid #ccc; }
+        label { font-size: 0.85rem; font-weight: bold; }
     </style>
-    <link rel="manifest" href="manifest.json">
 </head>
 <body>
 
     <div class="config-bar">
-        <div class="input-group">
-            <label for="mantraInput">Mantra</label>
-            <input type="text" id="mantraInput" style="width: 150px;" value="Ram">
-        </div>
-
-        <div class="input-group">
-            <label for="goalSelect">Goal Preset</label>
-            <select id="goalSelect">
-                <option value="108">1 Mala (108)</option>
-                <option value="1100">11 Malas (~1.1k)</option>
-                <option value="2100">21 Malas (~2.2k)</option>
-                <option value="11000">100 Malas (11k)</option>
-                <option value="custom">Custom...</option>
-            </select>
-        </div>
-
-        <div class="input-group">
-            <label for="targetInput">Total Target</label>
-            <input type="number" id="targetInput" style="width: 100px;" value="108">
-            <div id="malaConversionHint" class="mala-conversion-hint">= 1 Mala</div>
-        </div>
+        <button class="icon-btn jholi-btn" id="jholiBtn">🎒 My Jholi</button>
+        <div style="flex-grow:1"></div> <button class="icon-btn" id="modeBtn" title="Mode Switch">⌨️</button>
+        <button class="icon-btn" id="muteBtn" title="Mute/Unmute">🔊</button>
+        <button class="icon-btn" id="settingsBtn" title="Configuration">⚙️</button>
+        <button class="icon-btn" id="themeBtn" title="Theme">🌑</button>
     </div>
 
-    <div class="mala-wrapper">
-        <div class="mala-container" id="malaContainer">
-            <div class="guru-bead"></div>
-            </div>
+    <div class="time-stats">
+        <div class="stat-item"><span>Active Focus</span><span class="stat-val" id="activeTimeDisplay">0m</span></div>
+        <div class="stat-item"><span>Today's Count</span><span class="stat-val" id="todayCountDisplay">0</span></div>
+    </div>
 
+    <div class="visualizer-container">
+        <canvas id="mandalaCanvas" width="300" height="300"></canvas>
         <div class="center-stats">
-            <div>
-                <span class="rounds-count" id="roundsCount">0</span>
-                <span class="rounds-target" id="roundsTarget">/ 1</span>
+            <img id="ishtaImageDisplay" src="" style="display:none;"> 
+            <div class="stats-text">
+                <div class="rounds-count" id="roundsCount">0</div>
+                <div style="font-size:0.6rem; opacity:0.8; font-weight:bold;">MALAS</div>
             </div>
-            <div class="rounds-label">Malas Completed</div>
         </div>
-    </div>
-
-    <div class="total-counter-display">
-        Total Count: <span class="total-number" id="totalCount">0</span>
-        <span class="remaining-number" id="remainingCount">(108 left)</span>
     </div>
 
     <div class="board-container">
-        <div id="warning-toast">⚠️ No shortcuts on the path to devotion. Type manually.</div>
-        
-        <textarea id="jaapArea" placeholder="Begin your typing Sadhana here..."></textarea>
-        
-        <div class="controls">
-            <button id="clearBtn">Reset Sadhana</button>
+        <textarea id="jaapArea" placeholder="Start your Sadhana..."></textarea>
+        <div class="clicker-view" id="clickerView">
+            <div class="tap-button" id="tapBtn">TAP</div>
+            <div style="margin-top:20px; opacity:0.7;">Tap or Press Spacebar</div>
         </div>
     </div>
 
-    <script>
-        // --- Elements ---
-        const mantraInput = document.getElementById('mantraInput');
-        const jaapArea = document.getElementById('jaapArea');
-        const goalSelect = document.getElementById('goalSelect');
-        const targetInput = document.getElementById('targetInput');
-        const conversionHint = document.getElementById('malaConversionHint');
+    <div id="toast">Message</div>
+
+    <div class="modal-overlay" id="jholiModal"><div class="modal-box">
+        <div class="jholi-section">
+            <div class="profile-card">
+                <div class="profile-icon">👤</div>
+                <div class="profile-details">
+                    <div class="profile-name" id="userNameDisplay">Guest Devotee</div>
+                    <div class="profile-status" id="userStatusDisplay">Local Profile</div>
+                </div>
+                <button class="btn-outline" id="loginActionBtn" onclick="handleLogin()">Login</button>
+            </div>
+        </div>
+
+        <div class="jholi-section">
+            <h4 style="margin:0 0 10px 0;">📅 My Calendar & Stats</h4>
+            <div class="hist-total" style="font-size:1.2rem; font-weight:bold; color:var(--primary); margin-bottom:5px;">
+                Grand Total: <span id="grandTotalDisplay">0</span>
+            </div>
+            <div class="hist-list" id="histList">
+                <div class="hist-item"><span>No history yet</span><span>--</span></div>
+            </div>
+        </div>
+
+        <div class="jholi-section">
+            <h4 style="margin:0 0 10px 0;">💾 Data Bank</h4>
+            <div class="data-grid">
+                <button class="modal-btn btn-outline" id="backupBtn">⬇️ Backup</button>
+                <button class="modal-btn btn-outline" id="restoreBtn">⬆️ Restore</button>
+            </div>
+        </div>
         
-        // Stats Elements
-        const totalCountDisplay = document.getElementById('totalCount');
-        const remainingCountDisplay = document.getElementById('remainingCount');
-        const roundsCountDisplay = document.getElementById('roundsCount');
-        const roundsTargetDisplay = document.getElementById('roundsTarget');
-        const malaContainer = document.getElementById('malaContainer');
-        const warningToast = document.getElementById('warning-toast');
-        const clearBtn = document.getElementById('clearBtn');
+        <button class="modal-btn btn-p" id="printSlipBtn">🖨️ Print Deposit Slip</button>
 
-        // --- Constants & State ---
-        const MALA_SIZE = 108;
-        const KEYS = { TEXT: 'jaap_text_v6', MANTRA: 'jaap_mantra_v6', TARGET: 'jaap_target_v6' };
-        let beadsElements = []; 
+        <button class="modal-btn btn-s" onclick="document.getElementById('jholiModal').style.display='none'">Close Jholi</button>
+    </div></div>
 
-        // --- Initialization ---
-        window.onload = () => {
-            generateMalaBeads();
+
+    <div class="modal-overlay" id="settingsModal"><div class="modal-box">
+        <h3>⚙️ Configuration</h3>
+        
+        <div class="jholi-section">
+            <label>🖼️ Ishta Devata Image</label>
+            <div class="file-upload"><input type="file" id="ishtaInput" accept="image/*"></div>
+        </div>
+
+        <div class="jholi-section">
+            <label>🔊 Sound Settings</label>
+            <div style="font-size:0.8rem; margin-bottom:5px; opacity:0.7;">Upload MP3 or use default Ram.mp3</div>
+            <div class="file-upload"><input type="file" id="soundInput" accept="audio/mp3,audio/wav"></div>
+        </div>
+
+        <div class="input-row"><label style="width:60px">Mantra:</label><input type="text" id="mantraInput" placeholder="Ram"></div>
+        <div class="input-row"><label style="width:60px">Target:</label><input type="number" id="targetInput" placeholder="108"></div>
+        <div class="input-row"><label style="width:60px">Script:</label><input type="text" id="transDest" placeholder="राम"><input type="checkbox" id="transEnable"></div>
+        
+        <button class="modal-btn btn-p" onclick="saveSettings()">Save Configuration</button>
+    </div></div>
+
+    <div class="modal-overlay" id="backupPassModal"><div class="modal-box">
+        <h3>🔐 Create Backup Password</h3>
+        <input type="password" id="backupPass" placeholder="Password" style="width:90%; padding:10px; margin:10px 0;">
+        <button class="modal-btn btn-p" id="doBackupBtn">Download File</button>
+        <button class="modal-btn btn-s" onclick="document.getElementById('backupPassModal').style.display='none'">Cancel</button>
+    </div></div>
+    <div class="modal-overlay" id="restorePassModal"><div class="modal-box">
+        <h3>📂 Select Backup File</h3>
+        <input type="file" id="restoreFile" accept=".json" style="margin-bottom:10px;">
+        <input type="password" id="restorePass" placeholder="Enter Password" style="width:90%; padding:10px; margin:10px 0;">
+        <button class="modal-btn btn-p" id="doRestoreBtn">Restore Data</button>
+        <button class="modal-btn btn-s" onclick="document.getElementById('restorePassModal').style.display='none'">Cancel</button>
+    </div></div>
+    <div class="modal-overlay" id="printModal"><div class="modal-box">
+        <h3>🖨️ Slip Details</h3>
+        <div class="input-row"><input type="text" id="devName" placeholder="Your Name"></div>
+        <div class="input-row"><input type="text" id="ardasNote" placeholder="Ardas / Wish"></div>
+        <button class="modal-btn btn-p" id="doPrintBtn">Generate PDF</button>
+        <button class="modal-btn btn-s" onclick="document.getElementById('printModal').style.display='none'">Cancel</button>
+    </div></div>
+
+    <script>
+        // -----------------------------------------------------
+        // 1. LOGIN INIT
+        // -----------------------------------------------------
+        let currentUser = null;
+        if (window.netlifyIdentity) {
+            window.netlifyIdentity.init(); 
+            const u = window.netlifyIdentity.currentUser();
+            if(u) updateProfileUI(u);
+            window.netlifyIdentity.on("login", user => { updateProfileUI(user); window.netlifyIdentity.close(); });
+            window.netlifyIdentity.on("logout", () => { updateProfileUI(null); document.location.href = "/"; });
+        }
+
+        function updateProfileUI(user) {
+            currentUser = user;
+            const nameD = document.getElementById('userNameDisplay');
+            const statD = document.getElementById('userStatusDisplay');
+            const btn = document.getElementById('loginActionBtn');
+            if (user) {
+                nameD.innerText = user.user_metadata.full_name || "Devotee";
+                statD.innerText = "Logged In (Netlify)";
+                btn.innerText = "Logout";
+                btn.onclick = () => window.netlifyIdentity.logout();
+            } else {
+                nameD.innerText = "Guest Devotee";
+                statD.innerText = "Local Profile";
+                btn.innerText = "Login / Signup";
+                btn.onclick = () => window.netlifyIdentity.open();
+            }
+        }
+        function handleLogin() { if(currentUser) window.netlifyIdentity.logout(); else window.netlifyIdentity.open(); }
+
+        // -----------------------------------------------------
+        // 2. STATE & CONFIG
+        // -----------------------------------------------------
+        const KEYS = { DATA: 'sadhana_jholi_data', CONF: 'sadhana_jholi_conf', HIST: 'sadhana_jholi_hist' };
+        const MALA = 108; 
+        
+        let appData = { count: 0, text: "", date: new Date().toDateString(), startTime: null, activeSeconds: 0, ishtaImg: null, customSound: null };
+        let config = { mantra: "Ram", target: 108, theme: "light", transEnable: false, transScript: "राम" };
+        let history = []; 
+
+        let lastActivity = 0;
+        let soundEnabled = true; // Mute state
+        let audioSrc = "ram.mp3"; // Default file
+        let audioObj = null; // The Audio object
+        let isClicker = false;
+
+        // -----------------------------------------------------
+        // 3. INIT & LOOPS
+        // -----------------------------------------------------
+        window.addEventListener('load', () => {
+            loadState();
+            checkNewDay(); 
             
-            // Load saved settings
-            mantraInput.value = localStorage.getItem(KEYS.MANTRA) || "Ram";
-            jaapArea.value = localStorage.getItem(KEYS.TEXT) || "";
+            // Canvas
+            const c = document.getElementById('mandalaCanvas');
+            // Init mandala logic here (simplified for this snippet)
+            updateStats();
+            applyTheme();
+
+            // Loops
+            setInterval(checkActiveTime, 1000);
+            startJyotiLoop();
+
+            // SW
+            if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
+        });
+
+        function loadState() {
+            const d=localStorage.getItem(KEYS.DATA), c=localStorage.getItem(KEYS.CONF), h=localStorage.getItem(KEYS.HIST);
+            if(d) {
+                let l = JSON.parse(d);
+                if(l.activeSeconds===undefined || isNaN(l.activeSeconds)) l.activeSeconds=0;
+                appData = Object.assign(appData, l);
+            }
+            if(c) config=JSON.parse(c);
+            if(h) history=JSON.parse(h);
+
+            // UI Restore
+            document.getElementById('mantraInput').value = config.mantra;
+            document.getElementById('jaapArea').value = appData.text;
+            if(appData.ishtaImg) document.getElementById('ishtaImageDisplay').src = appData.ishtaImg;
+            if(appData.customSound) audioSrc = appData.customSound; // Load custom sound
             
-            const savedTarget = localStorage.getItem(KEYS.TARGET) || "108";
-            targetInput.value = savedTarget;
-            
-            // Sync dropdown if matches
-            syncDropdown(savedTarget);
-            
-            calculate();
+            updateStats();
+        }
+
+        function saveState() {
+            localStorage.setItem(KEYS.DATA, JSON.stringify(appData));
+            localStorage.setItem(KEYS.CONF, JSON.stringify(config));
+            localStorage.setItem(KEYS.HIST, JSON.stringify(history));
+        }
+
+        function checkNewDay() {
+            const today = new Date().toDateString();
+            if (appData.date !== today) {
+                if (appData.count > 0) history.unshift({ date: appData.date, count: appData.count });
+                appData.count = 0; appData.text = ""; appData.activeSeconds = 0; appData.date = today;
+                saveState(); updateStats();
+            }
+        }
+
+        // -----------------------------------------------------
+        // 4. CORE ENGINE
+        // -----------------------------------------------------
+        function registerActivity() {
+            const now = Date.now(); lastActivity = now;
+            updateTimeStats();
+        }
+
+        function checkActiveTime() {
+            if (Date.now() - lastActivity < 5000) {
+                appData.activeSeconds = (appData.activeSeconds || 0) + 1;
+                if(appData.activeSeconds % 10 === 0) saveState();
+                updateTimeStats();
+            }
+        }
+
+        function updateTimeStats() {
+            const sec = appData.activeSeconds || 0;
+            const m = Math.floor(sec / 60);
+            document.getElementById('activeTimeDisplay').innerText = (m < 60 ? m + "m" : Math.floor(m/60) + "h " + (m%60) + "m");
+            document.getElementById('todayCountDisplay').innerText = appData.count;
+        }
+
+        // --- SOUND LOGIC ---
+        function playTapSound() {
+            if(!soundEnabled) return;
+            // Create audio object if not exists or if source changed
+            if(!audioObj || audioObj.src !== audioSrc) {
+                audioObj = new Audio(audioSrc);
+                audioObj.volume = 0.5;
+            }
+            // Reset and play
+            audioObj.currentTime = 0;
+            audioObj.play().catch(e => console.log("Audio play failed (interaction needed)", e));
+        }
+
+        document.getElementById('muteBtn').onclick = function() {
+            soundEnabled = !soundEnabled;
+            this.innerText = soundEnabled ? "🔊" : "🔇";
+            // showToast(soundEnabled ? "Sound On" : "Muted");
         };
 
-        // --- ANTI-CHEAT ---
-        jaapArea.addEventListener('paste', (e) => { e.preventDefault(); showWarning(); });
-        jaapArea.addEventListener('drop', (e) => { e.preventDefault(); showWarning(); });
-
-        function showWarning() {
-            warningToast.classList.add('show');
-            setTimeout(() => { warningToast.classList.remove('show'); }, 3000);
+        // --- INPUTS ---
+        function handleCountInput(e) {
+            registerActivity();
+            playTapSound();
+            appData.count++; 
+            updateStats(); saveState();
         }
 
-        // --- MALA GENERATION ---
-        function generateMalaBeads() {
-            const radius = 140; 
-            const centerX = 150; 
-            const centerY = 150;
-
-            for (let i = 0; i < MALA_SIZE; i++) {
-                const bead = document.createElement('div');
-                bead.classList.add('bead');
-                // Start from top (-PI/2)
-                const angle = (i / MALA_SIZE) * 2 * Math.PI - (Math.PI / 2);
-                const x = centerX + radius * Math.cos(angle);
-                const y = centerY + radius * Math.sin(angle);
-                bead.style.left = `${x}px`;
-                bead.style.top = `${y}px`;
-                malaContainer.appendChild(bead);
-                beadsElements.push(bead); 
-            }
-        }
-
-        // --- Logic & Math ---
-        function escapeRegExp(string) { return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
-
-        function calculate() {
-            // 1. Get Inputs
-            const mantra = mantraInput.value.trim();
-            const content = jaapArea.value;
-            let targetCount = parseInt(targetInput.value);
-            if(isNaN(targetCount) || targetCount < 1) targetCount = 108;
-
-            // 2. Count Occurrences
-            let totalTyped = 0;
-            if (mantra && content) {
-                try {
-                    const regex = new RegExp(escapeRegExp(mantra), 'gi');
-                    const matches = content.match(regex);
-                    totalTyped = matches ? matches.length : 0;
-                } catch (e) { console.error(e); }
-            }
-
-            // 3. Stats Calculation
-            const completedMalas = Math.floor(totalTyped / MALA_SIZE);
-            const targetMalas = (targetCount / MALA_SIZE).toFixed(1); // 1 decimal place (e.g. 10.5)
-            const remaining = targetCount - totalTyped;
-
-            // 4. Update UI: Center Circle
-            roundsCountDisplay.innerText = completedMalas;
-            // Round the target display nicely (remove .0 if not needed)
-            const prettyTarget = targetMalas.endsWith('.0') ? parseInt(targetMalas) : targetMalas;
-            roundsTargetDisplay.innerText = `/ ${prettyTarget}`;
-
-            // 5. Update UI: Bottom Stats
-            totalCountDisplay.innerText = totalTyped.toLocaleString();
-            
-            if (remaining <= 0) {
-                remainingCountDisplay.innerText = "(Goal Reached! 🎉)";
-                remainingCountDisplay.style.color = "var(--success)";
-            } else {
-                remainingCountDisplay.innerText = `(${remaining.toLocaleString()} left)`;
-                remainingCountDisplay.style.color = "#666";
-            }
-
-            // 6. Update UI: Visual Beads
-            let currentBeadPosition = totalTyped % MALA_SIZE;
-            // If strictly a multiple of 108, light up all beads
-            if (totalTyped > 0 && currentBeadPosition === 0) currentBeadPosition = MALA_SIZE;
-            updateBeadVisuals(currentBeadPosition);
-
-            // 7. Update UI: Input Hint
-            updateConversionHint(targetCount);
-
-            // 8. Save
-            localStorage.setItem(KEYS.TEXT, content);
-            localStorage.setItem(KEYS.MANTRA, mantra);
-            localStorage.setItem(KEYS.TARGET, targetCount);
-        }
-
-        function updateBeadVisuals(currentPos) {
-            beadsElements.forEach((bead, index) => {
-                if (index < currentPos) {
-                    bead.classList.add('active');
-                } else {
-                    bead.classList.remove('active');
-                }
-            });
-        }
-
-        function updateConversionHint(count) {
-            const malas = (count / MALA_SIZE).toFixed(1);
-            const pretty = malas.endsWith('.0') ? parseInt(malas) : malas;
-            conversionHint.innerText = `= ${pretty} Malas`;
-        }
-
-        function syncDropdown(val) {
-            let found = false;
-            for(let i=0; i<goalSelect.options.length; i++){
-                if(goalSelect.options[i].value == val){
-                    goalSelect.selectedIndex = i;
-                    found = true;
-                    break;
-                }
-            }
-            if(!found) goalSelect.value = 'custom';
-        }
-
-        // --- Event Listeners ---
-        
         // Typing
-        jaapArea.addEventListener('input', calculate);
+        document.getElementById('jaapArea').addEventListener('input', (e) => {
+            registerActivity();
+            let txt = e.target.value; const m = config.mantra.trim();
+            // Transliteration
+            if(config.transEnable && config.transScript) {
+                const r = new RegExp(escapeRegExp(m)+"(?=\\s|$|[.,!])", 'gi');
+                if(r.test(txt)) { 
+                    let s = e.target.selectionStart; txt = txt.replace(r, config.transScript); 
+                    e.target.value = txt; e.target.selectionStart=s; e.target.selectionEnd=s;
+                }
+            }
+            // Count Check
+            let pat = escapeRegExp(m); if(config.transEnable && config.transScript) pat += "|"+escapeRegExp(config.transScript);
+            const matches = txt.match(new RegExp(pat, 'gi'));
+            
+            if(matches && matches.length > appData.count) playTapSound();
+            appData.count = matches ? matches.length : 0; appData.text = txt;
+            updateStats(); saveState();
+        });
+
+        // Clicker Button
+        document.getElementById('tapBtn').addEventListener('pointerup', (e) => {
+            e.preventDefault(); 
+            const sep = appData.text.length>0?" ":"";
+            const add = (config.transEnable && config.transScript) ? config.transScript : config.mantra;
+            appData.text += sep + add; document.getElementById('jaapArea').value=appData.text;
+            
+            handleCountInput();
+            const b=e.target; b.style.transform="scale(0.9)"; setTimeout(()=>b.style.transform="scale(1)",100);
+        });
+
+        // Spacebar Logic (Manasik Mode)
+        document.addEventListener('keyup', (e) => {
+            if(isClicker && (e.code === 'Space' || e.code === 'Enter')) {
+                e.preventDefault();
+                const sep = appData.text.length>0?" ":"";
+                const add = (config.transEnable && config.transScript) ? config.transScript : config.mantra;
+                appData.text += sep + add; 
+                // Note: We don't update textarea VISUALLY in clicker mode to save perf, but store it.
+                handleCountInput();
+            }
+        });
+        // Prevent scroll on spacebar
+        document.addEventListener('keydown', (e) => { if(isClicker && e.code==='Space') e.preventDefault(); });
+
+        // -----------------------------------------------------
+        // 5. JHOLI & SETTINGS LOGIC
+        // -----------------------------------------------------
         
-        // Changing Mantra
-        mantraInput.addEventListener('input', calculate);
+        // Jholi Button - Populates Stats then opens
+        document.getElementById('jholiBtn').onclick = () => {
+            // Update Grand Total
+            let grand = appData.count;
+            history.forEach(h => grand += h.count);
+            document.getElementById('grandTotalDisplay').innerText = grand.toLocaleString();
 
-        // Changing Target (Dropdown)
-        goalSelect.addEventListener('change', () => {
-            if(goalSelect.value !== 'custom') {
-                targetInput.value = goalSelect.value;
-                calculate();
+            // Populate History List
+            const list = document.getElementById('histList');
+            let html = "";
+            if(appData.count > 0) {
+                html += `<div class="hist-item" style="font-weight:bold; color:var(--primary)"><span>Today</span><span>${appData.count}</span></div>`;
             }
-        });
-
-        // Changing Target (Manual Input)
-        targetInput.addEventListener('input', () => {
-            goalSelect.value = 'custom';
-            calculate();
-        });
-
-        // Clear
-        clearBtn.addEventListener('click', () => {
-            if(confirm("Reset your Sadhana count to zero?")) {
-                jaapArea.value = "";
-                calculate();
-                jaapArea.focus();
+            if(history.length === 0 && appData.count === 0) {
+                html = `<div class="hist-item"><span>No history yet</span><span>Start Chanting</span></div>`;
+            } else {
+                history.forEach(h => {
+                    html += `<div class="hist-item"><span>${h.date}</span><span>${h.count}</span></div>`;
+                });
             }
-        });
+            list.innerHTML = html;
 
+            document.getElementById('jholiModal').style.display='flex';
+        };
+
+        // File Uploads
+        document.getElementById('soundInput').onchange = function() {
+            const r = new FileReader();
+            r.onload = e => { 
+                appData.customSound = e.target.result; 
+                audioSrc = appData.customSound;
+                saveState(); alert("Sound Updated!");
+            };
+            r.readAsDataURL(this.files[0]);
+        };
+
+        document.getElementById('ishtaInput').onchange = function() {
+            const r = new FileReader();
+            r.onload = e => { 
+                appData.ishtaImg = e.target.result; 
+                document.getElementById('ishtaImageDisplay').src = appData.ishtaImg;
+                document.getElementById('ishtaImageDisplay').style.display='block';
+                saveState();
+            };
+            r.readAsDataURL(this.files[0]);
+        };
+
+        function saveSettings() {
+            config.mantra=document.getElementById('mantraInput').value;
+            config.target=document.getElementById('targetInput').value;
+            config.transScript=document.getElementById('transDest').value;
+            config.transEnable=document.getElementById('transEnable').checked;
+            document.getElementById('settingsModal').style.display='none';
+            saveState(); updateStats();
+        }
+
+        // Backup/Restore Logic (Same as before, just mapped to buttons)
+        document.getElementById('backupBtn').onclick = () => { document.getElementById('jholiModal').style.display='none'; document.getElementById('backupPassModal').style.display='flex'; };
+        document.getElementById('restoreBtn').onclick = () => { document.getElementById('jholiModal').style.display='none'; document.getElementById('restorePassModal').style.display='flex'; };
+
+        // Encryption
+        async function getK(p){ return window.crypto.subtle.importKey("raw", new TextEncoder().encode(p), "PBKDF2", false, ["deriveKey"]); }
+        async function derK(k,s,u){ return window.crypto.subtle.deriveKey({name:"PBKDF2",salt:s,iterations:100000,hash:"SHA-256"}, k, {name:"AES-GCM",length:256}, false, u); }
+        async function encD(txt, pass) { const s=window.crypto.getRandomValues(new Uint8Array(16)), iv=window.crypto.getRandomValues(new Uint8Array(12)); const k=await getK(pass), aes=await derK(k, s, ["encrypt"]), c=await window.crypto.subtle.encrypt({name:"AES-GCM",iv}, aes, new TextEncoder().encode(txt)); return { iv: [...iv], salt: [...s], content: [...new Uint8Array(c)] }; }
+        async function decD(obj, pass) { const k=await getK(pass), aes=await derK(k, new Uint8Array(obj.salt), ["decrypt"]), d=await window.crypto.subtle.decrypt({name:"AES-GCM",iv:new Uint8Array(obj.iv)}, aes, new Uint8Array(obj.content)); return new TextDecoder().decode(d); }
+
+        document.getElementById('doBackupBtn').onclick = async () => {
+            const p = document.getElementById('backupPass').value; if(!p) return alert("Password needed");
+            const pl = JSON.stringify({d:appData, c:config, h:history});
+            try { const e = await encD(pl, p); const a = document.createElement("a"); a.href=URL.createObjectURL(new Blob([JSON.stringify(e)],{type:'json'})); a.download="sadhana.json"; a.click(); document.getElementById('backupPassModal').style.display='none'; } catch(e) { alert("Error"); }
+        };
+        document.getElementById('doRestoreBtn').onclick = () => {
+            const f = document.getElementById('restoreFile').files[0], p = document.getElementById('restorePass').value;
+            if(!f || !p) return alert("Missing info");
+            const r = new FileReader(); r.onload = async(e) => {
+                try { const s = await decD(JSON.parse(e.target.result), p); const o = JSON.parse(s); appData = o.d; config = o.c; history = o.h; if(appData.activeSeconds===undefined) appData.activeSeconds=0; saveState(); loadState(); alert("Restored!"); location.reload(); } catch(er) { alert("Invalid Password"); }
+            }; r.readAsText(f);
+        };
+
+        // Print Logic
+        document.getElementById('printSlipBtn').onclick = () => { document.getElementById('jholiModal').style.display='none'; document.getElementById('printModal').style.display='flex'; };
+        document.getElementById('doPrintBtn').onclick = () => {
+            const w = window.open('', '', 'width=600,height=600');
+            w.document.write(`<html><body style="font-family:serif; text-align:center; border:5px double orange; padding:20px;">
+                <h1>|| Shree Ram ||</h1><h2>Naam Dhan Deposit Slip</h2>
+                <p><b>Devotee:</b> ${document.getElementById('devName').value || "Guest"}</p>
+                <p><b>Count:</b> ${appData.count}</p>
+                <p><b>Date:</b> ${new Date().toLocaleDateString()}</p>
+                <p><i>${document.getElementById('ardasNote').value}</i></p>
+                <br><br>____________________<br>Signature
+            </body></html>`);
+            w.document.close();
+        };
+
+        // --- UTILS ---
+        function startJyotiLoop() {
+            setInterval(() => {
+                const img = document.getElementById('ishtaImageDisplay');
+                if(!appData.ishtaImg) return;
+                const idle = (Date.now() - lastActivity) / 1000;
+                img.classList.remove('jyoti-flicker');
+                if(idle > 60) img.style.opacity = 0.2;
+                else if(idle > 30) { img.style.opacity = 0.6; img.classList.add('jyoti-flicker'); }
+                else img.style.opacity = 1.0;
+            }, 1000);
+        }
+        function updateStats() { document.getElementById('roundsCount').innerText = Math.floor(appData.count/MALA); updateTimeStats(); drawMandala(appData.count); }
+        function drawMandala(n) { 
+            const canvas = document.getElementById('mandalaCanvas'); const ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0,300,300); const cx=150, cy=150, r=140; 
+            ctx.beginPath(); ctx.arc(cx,cy,r,0,2*Math.PI); ctx.strokeStyle=config.theme==='dark'?'#444':'#eee'; ctx.lineWidth=2; ctx.stroke(); 
+            const pos = n % MALA; for(let i=0; i<pos; i++) { const a = (i/MALA)*2*Math.PI - (Math.PI/2); const x = cx + r*Math.cos(a), y = cy + r*Math.sin(a); ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y); ctx.strokeStyle = `hsla(${i*3.3}, 70%, 50%, 0.4)`; ctx.lineWidth=1; ctx.stroke(); ctx.beginPath(); ctx.arc(x,y,4,0,2*Math.PI); ctx.fillStyle=config.theme==='dark'?'#ffd700':'#d84315'; ctx.fill(); } 
+        }
+        function escapeRegExp(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+        document.getElementById('settingsBtn').onclick=()=>document.getElementById('settingsModal').style.display='flex';
+        document.getElementById('modeBtn').onclick=()=>{ isClicker=!isClicker; document.getElementById('jaapArea').style.display=isClicker?'none':'block'; document.getElementById('clickerView').style.display=isClicker?'flex':'none'; };
+        document.getElementById('themeBtn').onclick=()=>{ config.theme=config.theme==='light'?'dark':'light'; applyTheme(); saveState(); drawMandala(appData.count); };
+        function applyTheme(){ if(config.theme==='dark') document.body.classList.add('dark-mode'); else document.body.classList.remove('dark-mode'); }
+        document.getElementById('jaapArea').addEventListener('paste', e=>{e.preventDefault(); alert("⚠️ No Shortcuts!");});
     </script>
 </body>
 </html>
