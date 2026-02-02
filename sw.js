@@ -1,4 +1,4 @@
-const CACHE_NAME = 'naam-jaap-v1';
+const CACHE_NAME = 'naam-jaap-v2'; // <--- CHANGED TO v2
 const ASSETS = [
     '/',
     '/index.html',
@@ -7,8 +7,8 @@ const ASSETS = [
     '/icon-512.png'
 ];
 
-// Install Event - Cache Files
 self.addEventListener('install', (e) => {
+    self.skipWaiting(); // <--- Forces new version to take over immediately
     e.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             return cache.addAll(ASSETS);
@@ -16,7 +16,6 @@ self.addEventListener('install', (e) => {
     );
 });
 
-// Activate Event - Clean old caches
 self.addEventListener('activate', (e) => {
     e.waitUntil(
         caches.keys().then((keys) => {
@@ -25,9 +24,9 @@ self.addEventListener('activate', (e) => {
             }));
         })
     );
+    return self.clients.claim(); // <--- Takes control of open pages immediately
 });
 
-// Fetch Event - Serve from Cache if offline
 self.addEventListener('fetch', (e) => {
     e.respondWith(
         caches.match(e.request).then((res) => {
