@@ -1,4 +1,4 @@
-const CACHE_NAME = 'naam-jaap-v2'; // <--- CHANGED TO v2
+const CACHE_NAME = 'naam-jaap-v2.1'; // <--- CHANGED TO v2
 const ASSETS = [
     '/',
     '/index.html',
