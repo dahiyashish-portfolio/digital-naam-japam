@@ -278,9 +278,9 @@
         let hwImg = null; let sigImg = null;
 
         window.addEventListener('load', () => {
-            loadState(); checkNewDay(); updateStats(); applyTheme();
-            setInterval(checkActiveTime, 1000); startJyotiLoop();
-            if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
+            // loadState(); checkNewDay(); updateStats(); applyTheme();
+            // setInterval(checkActiveTime, 1000); startJyotiLoop();
+            // if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
         });
 
         function loadState() {
@@ -401,5 +401,6 @@
         function applyTheme(){ if(config.theme==='dark') document.body.classList.add('dark-mode'); else document.body.classList.remove('dark-mode'); }
         document.getElementById('jaapArea').addEventListener('paste', e=>{e.preventDefault(); alert("⚠️ No Shortcuts!");});
     </script>
+    <script type="module" src="./src/app.js"></script>
 </body>
 </html>
