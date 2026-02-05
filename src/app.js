@@ -26,6 +26,17 @@ import { startEkagrataEngine } from "./core/time.js";
 
 import { initJaapUI } from "./ui/jaapUI.js";
 
+import {
+  initMandala,
+  renderMandala,
+  initJyoti,
+  updateJyotiVisual
+} from "./sadhana/visualEngine.js";
+
+import { getLastActivityTime } from "./core/time.js";
+
+import { initIshtaUI } from "./ui/ishtaUI.js";
+
 // --------------------------------------------------
 // 1. Application Init
 // --------------------------------------------------
@@ -48,6 +59,23 @@ function initApp() {
 
   // Initialize Jaap UI
   initJaapUI();
+
+  const mandalaCanvas = document.getElementById("mandalaCanvas");
+  const jyotiImg = document.getElementById("ishtaImageDisplay");
+
+  initMandala(mandalaCanvas);
+  initJyoti(jyotiImg);
+
+  // Redraw mandala periodically (matches legacy behavior)
+  setInterval(renderMandala, 1000);
+
+  // Update Jyoti based on activity
+  setInterval(() => {
+    updateJyotiVisual(getLastActivityTime());
+  }, 1000);
+
+  initIshtaUI();
+
 }
 
 // --------------------------------------------------

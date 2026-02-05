@@ -333,7 +333,7 @@
 
         // File Readers
         document.getElementById('soundInput').onchange = function() { const r = new FileReader(); r.onload = e => { appData.customSound = e.target.result; audioSrc = appData.customSound; saveState(); alert("Naad Set!"); }; r.readAsDataURL(this.files[0]); };
-        document.getElementById('ishtaInput').onchange = function() { const r = new FileReader(); r.onload = e => { appData.ishtaImg = e.target.result; document.getElementById('ishtaImageDisplay').src = appData.ishtaImg; saveState(); }; r.readAsDataURL(this.files[0]); };
+        // document.getElementById('ishtaInput').onchange = function() { const r = new FileReader(); r.onload = e => { appData.ishtaImg = e.target.result; document.getElementById('ishtaImageDisplay').src = appData.ishtaImg; saveState(); }; r.readAsDataURL(this.files[0]); };
         document.getElementById('hwMantraInput').onchange = function() { const r = new FileReader(); r.onload = e => { hwImg = e.target.result; }; r.readAsDataURL(this.files[0]); };
         document.getElementById('sigInput').onchange = function() { const r = new FileReader(); r.onload = e => { sigImg = e.target.result; }; r.readAsDataURL(this.files[0]); };
 
@@ -391,9 +391,9 @@
         };
 
         // Helpers
-        function startJyotiLoop() { setInterval(() => { const img = document.getElementById('ishtaImageDisplay'); if(!appData.ishtaImg) return; const idle = (Date.now() - lastActivity) / 1000; img.classList.remove('jyoti-flicker'); if(idle > 60) img.style.opacity = 0.2; else if(idle > 30) { img.style.opacity = 0.6; img.classList.add('jyoti-flicker'); } else img.style.opacity = 1.0; }, 1000); }
+        // function startJyotiLoop() { setInterval(() => { const img = document.getElementById('ishtaImageDisplay'); if(!appData.ishtaImg) return; const idle = (Date.now() - lastActivity) / 1000; img.classList.remove('jyoti-flicker'); if(idle > 60) img.style.opacity = 0.2; else if(idle > 30) { img.style.opacity = 0.6; img.classList.add('jyoti-flicker'); } else img.style.opacity = 1.0; }, 1000); }
         function updateStats() { document.getElementById('roundsCount').innerText = Math.floor(appData.count/MALA); updateTimeStats(); drawMandala(appData.count); }
-        function drawMandala(n) { const canvas = document.getElementById('mandalaCanvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,300,300); const cx=150, cy=150, r=140; ctx.beginPath(); ctx.arc(cx,cy,r,0,2*Math.PI); ctx.strokeStyle=config.theme==='dark'?'#444':'#eee'; ctx.lineWidth=2; ctx.stroke(); const pos = n % MALA; for(let i=0; i<pos; i++) { const a = (i/MALA)*2*Math.PI - (Math.PI/2); const x = cx + r*Math.cos(a), y = cy + r*Math.sin(a); ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y); ctx.strokeStyle = `hsla(${i*3.3}, 70%, 50%, 0.4)`; ctx.lineWidth=1; ctx.stroke(); ctx.beginPath(); ctx.arc(x,y,4,0,2*Math.PI); ctx.fillStyle=config.theme==='dark'?'#ffd700':'#d84315'; ctx.fill(); } }
+        // function drawMandala(n) { const canvas = document.getElementById('mandalaCanvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,300,300); const cx=150, cy=150, r=140; ctx.beginPath(); ctx.arc(cx,cy,r,0,2*Math.PI); ctx.strokeStyle=config.theme==='dark'?'#444':'#eee'; ctx.lineWidth=2; ctx.stroke(); const pos = n % MALA; for(let i=0; i<pos; i++) { const a = (i/MALA)*2*Math.PI - (Math.PI/2); const x = cx + r*Math.cos(a), y = cy + r*Math.sin(a); ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y); ctx.strokeStyle = `hsla(${i*3.3}, 70%, 50%, 0.4)`; ctx.lineWidth=1; ctx.stroke(); ctx.beginPath(); ctx.arc(x,y,4,0,2*Math.PI); ctx.fillStyle=config.theme==='dark'?'#ffd700':'#d84315'; ctx.fill(); } }
         function escapeRegExp(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
         document.getElementById('settingsBtn').onclick=()=>document.getElementById('settingsModal').style.display='flex';
         document.getElementById('modeBtn').onclick=()=>{ isClicker=!isClicker; document.getElementById('jaapArea').style.display=isClicker?'none':'block'; document.getElementById('clickerView').style.display=isClicker?'flex':'none'; };
