@@ -24,6 +24,8 @@ import {
 
 import { startEkagrataEngine } from "./core/time.js";
 
+import { initJaapUI } from "./ui/jaapUI.js";
+
 // --------------------------------------------------
 // 1. Application Init
 // --------------------------------------------------
@@ -43,6 +45,9 @@ function initApp() {
 
   // Start Ekagrata Engine
   startEkagrataEngine();
+
+  // Initialize Jaap UI
+  initJaapUI();
 }
 
 // --------------------------------------------------

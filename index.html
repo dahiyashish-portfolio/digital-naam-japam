@@ -308,19 +308,19 @@
 
         function handleCountInput() { registerActivity(); playTapSound(); appData.count++; updateStats(); saveState(); }
         
-        document.getElementById('jaapArea').addEventListener('input', (e) => {
-            registerActivity(); let txt = e.target.value; const m = config.mantra.trim();
-            if(config.transEnable && config.transScript) { const r = new RegExp(escapeRegExp(m)+"(?=\\s|$|[.,!])", 'gi'); if(r.test(txt)) { let s = e.target.selectionStart; txt = txt.replace(r, config.transScript); e.target.value = txt; e.target.selectionStart=s; e.target.selectionEnd=s; } }
-            let pat = escapeRegExp(m); if(config.transEnable && config.transScript) pat += "|"+escapeRegExp(config.transScript);
-            const matches = txt.match(new RegExp(pat, 'gi'));
-            if(matches && matches.length > appData.count) playTapSound();
-            appData.count = matches ? matches.length : 0; appData.text = txt; updateStats(); saveState();
-        });
+        // document.getElementById('jaapArea').addEventListener('input', (e) => {
+        //     registerActivity(); let txt = e.target.value; const m = config.mantra.trim();
+        //     if(config.transEnable && config.transScript) { const r = new RegExp(escapeRegExp(m)+"(?=\\s|$|[.,!])", 'gi'); if(r.test(txt)) { let s = e.target.selectionStart; txt = txt.replace(r, config.transScript); e.target.value = txt; e.target.selectionStart=s; e.target.selectionEnd=s; } }
+        //     let pat = escapeRegExp(m); if(config.transEnable && config.transScript) pat += "|"+escapeRegExp(config.transScript);
+        //     const matches = txt.match(new RegExp(pat, 'gi'));
+        //     if(matches && matches.length > appData.count) playTapSound();
+        //     appData.count = matches ? matches.length : 0; appData.text = txt; updateStats(); saveState();
+        // });
 
-        document.getElementById('tapBtn').addEventListener('pointerup', (e) => { e.preventDefault(); const sep = appData.text.length>0?" ":""; const add = (config.transEnable && config.transScript) ? config.transScript : config.mantra; appData.text += sep + add; document.getElementById('jaapArea').value=appData.text; handleCountInput(); const b=e.target; b.style.transform="scale(0.9)"; setTimeout(()=>b.style.transform="scale(1)",100); });
+        // document.getElementById('tapBtn').addEventListener('pointerup', (e) => { e.preventDefault(); const sep = appData.text.length>0?" ":""; const add = (config.transEnable && config.transScript) ? config.transScript : config.mantra; appData.text += sep + add; document.getElementById('jaapArea').value=appData.text; handleCountInput(); const b=e.target; b.style.transform="scale(0.9)"; setTimeout(()=>b.style.transform="scale(1)",100); });
         
-        document.addEventListener('keyup', (e) => { if(isClicker && (e.code === 'Space' || e.code === 'Enter')) { e.preventDefault(); const sep = appData.text.length>0?" ":""; const add = (config.transEnable && config.transScript) ? config.transScript : config.mantra; appData.text += sep + add; handleCountInput(); const btn = document.getElementById('tapBtn'); btn.classList.add('active-press'); setTimeout(() => btn.classList.remove('active-press'), 100); } });
-        document.addEventListener('keydown', (e) => { if(isClicker && e.code==='Space') e.preventDefault(); });
+        // document.addEventListener('keyup', (e) => { if(isClicker && (e.code === 'Space' || e.code === 'Enter')) { e.preventDefault(); const sep = appData.text.length>0?" ":""; const add = (config.transEnable && config.transScript) ? config.transScript : config.mantra; appData.text += sep + add; handleCountInput(); const btn = document.getElementById('tapBtn'); btn.classList.add('active-press'); setTimeout(() => btn.classList.remove('active-press'), 100); } });
+        // document.addEventListener('keydown', (e) => { if(isClicker && e.code==='Space') e.preventDefault(); });
 
         document.getElementById('jholiBtn').onclick = () => {
             let grand = appData.count; history.forEach(h => grand += h.count); document.getElementById('grandTotalDisplay').innerText = grand.toLocaleString();
