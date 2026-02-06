@@ -52,10 +52,10 @@ export function initSettingsUI() {
     setConfig(nextConfig);
 
     alert("Sankalpa surakshit ho gaya 🙏");
-  };
     // ✅ CLOSE Sankalpa modal after save
-  const modal = document.getElementById("settingsModal");
-  if (modal) modal.style.display = "none";
+    const modal = document.getElementById("settingsModal");
+    if (modal) modal.style.display = "none";
+  };
 }
 
 // --------------------------------------------------
