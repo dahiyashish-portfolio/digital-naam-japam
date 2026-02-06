@@ -16,26 +16,25 @@ import {
   getHistory,
   snapshotState,
 } from "./core/state.js";
-
 import {
   loadFromStorage,
   saveToStorage,
 } from "./core/storage.js";
-
 import { startEkagrataEngine } from "./core/time.js";
-
 import { initJaapUI } from "./ui/jaapUI.js";
-
 import {
   initMandala,
   renderMandala,
   initJyoti,
   updateJyotiVisual
 } from "./sadhana/visualEngine.js";
-
 import { getLastActivityTime } from "./core/time.js";
+import { initIshtaUI } from "./ui/ishtaUI.js";;
+import { initJholiUI } from "./ui/jholiUI.js";
+import { initBackupUI } from "./ui/backupUI.js";
+import { initThemeUI } from "./ui/themeUI.js";
+import { initSettingsUI } from "./ui/settingsUI.js";
 
-import { initIshtaUI } from "./ui/ishtaUI.js";
 
 // --------------------------------------------------
 // 1. Application Init
@@ -53,9 +52,6 @@ function initApp() {
 
   // Register Service Worker (unchanged behavior)
   registerServiceWorker();
-
-  // Start Ekagrata Engine
-  startEkagrataEngine();
 
   // Initialize Jaap UI
   initJaapUI();
@@ -76,7 +72,34 @@ function initApp() {
 
   initIshtaUI();
 
+    // SAFE: DOM now exists
+  // const backupBtn = document.getElementById("doBackupBtn");
+  // if (backupBtn) {
+  //   backupBtn.onclick = async () => {
+  //     const pwd = document.getElementById("backupPass").value;
+  //     if (!pwd) return alert("Password required");
+  //     await exportEncryptedBackup(pwd);
+  //   };
+  // }
+
+  // const restoreBtn = document.getElementById("doRestoreBtn");
+  // if (restoreBtn) {
+  //   restoreBtn.onclick = async () => {
+  //     const file = document.getElementById("restoreFile").files[0];
+  //     const pwd = document.getElementById("restorePass").value;
+  //     if (!file || !pwd) return alert("File & password required");
+  //     await restoreEncryptedBackup(file, pwd);
+  //   };
+  // }
+
+  initJholiUI();
+  initBackupUI();
+  initThemeUI();
+  initSettingsUI();
+  // Start Ekagrata Engine
+  startEkagrataEngine();
 }
+
 
 // --------------------------------------------------
 // 2. Temporary Render Hooks
