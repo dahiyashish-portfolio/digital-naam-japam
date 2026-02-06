@@ -351,50 +351,50 @@
         // document.getElementById('doRestoreBtn').onclick = () => { const f = document.getElementById('restoreFile').files[0], p = document.getElementById('restorePass').value; if(!f || !p) return alert("Missing info"); const r = new FileReader(); r.onload = async(e) => { try { const s = await decD(JSON.parse(e.target.result), p); const o = JSON.parse(s); appData = o.d; config = o.c; history = o.h; if(appData.activeSeconds===undefined) appData.activeSeconds=0; saveState(); loadState(); alert("Prapti Safal!"); location.reload(); } catch(er) { alert("Wrong Password"); } }; r.readAsText(f); };
 
         // --- PRINT LOGIC (FIXED) ---
-        document.getElementById('printSlipBtn').onclick = () => { document.getElementById('jholiModal').style.display='none'; document.getElementById('printModal').style.display='flex'; };
-        document.getElementById('doPrintBtn').onclick = () => {
-            // Regex to find mantra occurrences
-            let pat = escapeRegExp(config.mantra); 
-            if(config.transEnable && config.transScript) pat += "|"+escapeRegExp(config.transScript);
-            const m = appData.text.match(new RegExp(pat,'gi')); 
+        // document.getElementById('printSlipBtn').onclick = () => { document.getElementById('jholiModal').style.display='none'; document.getElementById('printModal').style.display='flex'; };
+        // document.getElementById('doPrintBtn').onclick = () => {
+        //     // Regex to find mantra occurrences
+        //     let pat = escapeRegExp(config.mantra); 
+        //     if(config.transEnable && config.transScript) pat += "|"+escapeRegExp(config.transScript);
+        //     const m = appData.text.match(new RegExp(pat,'gi')); 
             
-            if(!m) return alert("Kuch likha nahi (Nothing typed)!");
+        //     if(!m) return alert("Kuch likha nahi (Nothing typed)!");
 
-            // Grid Generation
-            let gridHtml = "";
-            if(hwImg) {
-                // Image Grid
-                 for(let i=0; i<m.length; i++) {
-                     gridHtml += `<div style="border-right:1px solid #fc0; border-bottom:1px solid #fc0; padding:5px; display:flex; justify-content:center; align-items:center;"><img src="${hwImg}" style="max-height:25px; max-width:100%;"></div>`;
-                 }
-            } else {
-                // Text Grid
-                gridHtml = m.map(x => `<div style="border-right:1px solid #fc0; border-bottom:1px solid #fc0; padding:5px; text-align:center;">${x}</div>`).join('');
-            }
+        //     // Grid Generation
+        //     let gridHtml = "";
+        //     if(hwImg) {
+        //         // Image Grid
+        //          for(let i=0; i<m.length; i++) {
+        //              gridHtml += `<div style="border-right:1px solid #fc0; border-bottom:1px solid #fc0; padding:5px; display:flex; justify-content:center; align-items:center;"><img src="${hwImg}" style="max-height:25px; max-width:100%;"></div>`;
+        //          }
+        //     } else {
+        //         // Text Grid
+        //         gridHtml = m.map(x => `<div style="border-right:1px solid #fc0; border-bottom:1px solid #fc0; padding:5px; text-align:center;">${x}</div>`).join('');
+        //     }
 
-            const w = window.open('', '', 'width=800,height=800');
-            w.document.write(`<html><body style="font-family:serif; color:#4e342e; padding:30px;">
-                <h1 style="text-align:center; color:#d84315;">|| Shree Ram ||</h1>
-                <div style="background:#fff8e1; padding:10px; font-weight:bold; display:flex; justify-content:space-between;">
-                    <span>Sadhak: ${document.getElementById('devName').value || "Guest"}</span>
-                    <span>Sankhya: ${m.length}</span>
-                </div>
-                <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(60px,1fr)); border:1px solid #fc0; margin-top:20px; font-size:12px;">
-                    ${gridHtml}
-                </div>
-                <div style="margin-top:20px; font-style:italic;">Ardas: ${document.getElementById('ardasNote').value}</div>
-                <div style="text-align:right; margin-top:40px;">
-                    ${sigImg ? `<img src="${sigImg}" height="50">` : 'Hastakshar'}
-                </div>
-            </body></html>`);
-            w.document.close();
-        };
+        //     const w = window.open('', '', 'width=800,height=800');
+        //     w.document.write(`<html><body style="font-family:serif; color:#4e342e; padding:30px;">
+        //         <h1 style="text-align:center; color:#d84315;">|| Shree Ram ||</h1>
+        //         <div style="background:#fff8e1; padding:10px; font-weight:bold; display:flex; justify-content:space-between;">
+        //             <span>Sadhak: ${document.getElementById('devName').value || "Guest"}</span>
+        //             <span>Sankhya: ${m.length}</span>
+        //         </div>
+        //         <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(60px,1fr)); border:1px solid #fc0; margin-top:20px; font-size:12px;">
+        //             ${gridHtml}
+        //         </div>
+        //         <div style="margin-top:20px; font-style:italic;">Ardas: ${document.getElementById('ardasNote').value}</div>
+        //         <div style="text-align:right; margin-top:40px;">
+        //             ${sigImg ? `<img src="${sigImg}" height="50">` : 'Hastakshar'}
+        //         </div>
+        //     </body></html>`);
+        //     w.document.close();
+        // };
 
         // Helpers
         // function startJyotiLoop() { setInterval(() => { const img = document.getElementById('ishtaImageDisplay'); if(!appData.ishtaImg) return; const idle = (Date.now() - lastActivity) / 1000; img.classList.remove('jyoti-flicker'); if(idle > 60) img.style.opacity = 0.2; else if(idle > 30) { img.style.opacity = 0.6; img.classList.add('jyoti-flicker'); } else img.style.opacity = 1.0; }, 1000); }
         function updateStats() { document.getElementById('roundsCount').innerText = Math.floor(appData.count/MALA); updateTimeStats(); drawMandala(appData.count); }
         // function drawMandala(n) { const canvas = document.getElementById('mandalaCanvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,300,300); const cx=150, cy=150, r=140; ctx.beginPath(); ctx.arc(cx,cy,r,0,2*Math.PI); ctx.strokeStyle=config.theme==='dark'?'#444':'#eee'; ctx.lineWidth=2; ctx.stroke(); const pos = n % MALA; for(let i=0; i<pos; i++) { const a = (i/MALA)*2*Math.PI - (Math.PI/2); const x = cx + r*Math.cos(a), y = cy + r*Math.sin(a); ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y); ctx.strokeStyle = `hsla(${i*3.3}, 70%, 50%, 0.4)`; ctx.lineWidth=1; ctx.stroke(); ctx.beginPath(); ctx.arc(x,y,4,0,2*Math.PI); ctx.fillStyle=config.theme==='dark'?'#ffd700':'#d84315'; ctx.fill(); } }
-        function escapeRegExp(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+        // function escapeRegExp(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
         document.getElementById('settingsBtn').onclick=()=>document.getElementById('settingsModal').style.display='flex';
         document.getElementById('modeBtn').onclick=()=>{ isClicker=!isClicker; document.getElementById('jaapArea').style.display=isClicker?'none':'block'; document.getElementById('clickerView').style.display=isClicker?'flex':'none'; };
         //document.getElementById('themeBtn').onclick=()=>{ config.theme=config.theme==='light'?'dark':'light'; applyTheme(); saveState(); drawMandala(appData.count); };

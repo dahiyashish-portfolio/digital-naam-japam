@@ -34,6 +34,8 @@ import { initJholiUI } from "./ui/jholiUI.js";
 import { initBackupUI } from "./ui/backupUI.js";
 import { initThemeUI } from "./ui/themeUI.js";
 import { initSettingsUI } from "./ui/settingsUI.js";
+import { initPrintUI } from "./ui/printUI.js";
+
 
 
 // --------------------------------------------------
@@ -96,6 +98,8 @@ function initApp() {
   initBackupUI();
   initThemeUI();
   initSettingsUI();
+  initPrintUI();
+
   // Start Ekagrata Engine
   startEkagrataEngine();
 }
