@@ -110,7 +110,7 @@ function initApp() {
 // (These will move to /ui modules later)
 // --------------------------------------------------
 
-function renderStats() {
+export function renderStats() {
   const { count, activeSeconds } = getAppData();
 
   const activeTimeDisplay = document.getElementById("activeTimeDisplay");

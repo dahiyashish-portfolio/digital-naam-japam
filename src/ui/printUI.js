@@ -102,7 +102,7 @@ export function initPrintUI() {
         <div style="background:#fff8e1; padding:10px; font-weight:bold;
                     display:flex; justify-content:space-between;">
           <span>Sadhak: ${sadhak}</span>
-          <span>Sankhya: ${matches.length}</span>
+          <span>Sankhya: ${appData.count}</span>
         </div>
 
         <div style="display:grid;

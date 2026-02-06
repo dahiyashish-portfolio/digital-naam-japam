@@ -12,6 +12,7 @@
 
 import { getAppData, getConfig, setAppData } from "../core/state.js";
 import { registerActivity } from "../core/time.js";
+import { renderStats } from "../app.js";
 
 // --------------------------------------------------
 // Helpers
@@ -44,10 +45,12 @@ export function handleTypingJaap(text) {
 
   const count = matches ? matches.length : 0;
 
-  setAppData({
-    text,
-    count,
-  });
+  // setAppData({
+  //   text,
+  //   count,
+  // });
+  setAppData({ text });
+
 }
 
 // --------------------------------------------------
@@ -67,6 +70,7 @@ export function handleTapJaap() {
     text: text + spacer + token,
     count: count + 1,
   });
+  renderStats();
 }
 
 // --------------------------------------------------

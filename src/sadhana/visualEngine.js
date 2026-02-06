@@ -25,6 +25,24 @@ export function initMandala(canvas) {
   mandalaSize = Math.min(canvas.width, canvas.height);
 }
 
+function drawMalaWire(ctx, cx, cy, radius) {
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+  ctx.strokeStyle = "#cfa44a"; // warm mala gold
+  ctx.lineWidth = 3;
+  ctx.stroke();
+}
+
+function drawCentralBindu(ctx, cx, cy) {
+  ctx.beginPath();
+  ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+  ctx.fillStyle = "#cfa44a";
+  ctx.shadowColor = "#cfa44a";
+  ctx.shadowBlur = 10;
+  ctx.fill();
+  ctx.shadowBlur = 0;
+}
+
 export function renderMandala() {
   if (!mandalaCtx) return;
 
@@ -37,6 +55,11 @@ export function renderMandala() {
   const cy = mandalaSize / 2;
   const radius = mandalaSize * 0.4;
 
+  // 1️⃣ Draw mala continuity FIRST (background)
+  drawMalaWire(mandalaCtx, cx, cy, radius);
+  drawCentralBindu(mandalaCtx, cx, cy);
+
+  // 2️⃣ Draw beads ON TOP
   for (let i = 0; i < MALA; i++) {
     const angle = (2 * Math.PI * i) / MALA - Math.PI / 2;
     const x = cx + radius * Math.cos(angle);
@@ -48,6 +71,7 @@ export function renderMandala() {
     mandalaCtx.fill();
   }
 }
+
 
 // --------------------------------------------------
 // Jyoti / Ishta Devata Visual Engine
