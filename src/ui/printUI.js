@@ -27,14 +27,22 @@ function escapeRegExp(str) {
 }
 
 export function initPrintUI() {
+  const openBtn = $("printSlipBtn");
   const printBtn = $("doPrintBtn");
+  const jholiModal = $("jholiModal");
   const printModal = $("printModal");
 
-  if (!printBtn) {
-    console.warn("[printUI] doPrintBtn not found");
+  if (!openBtn || !printBtn) {
+    console.warn("[printUI] print buttons not found");
     return;
   }
+  // ---- Open Print Modal ----
+  openBtn.onclick = () => {
+    if (jholiModal) jholiModal.style.display = "none";
+    if (printModal) printModal.style.display = "flex";
+  };
 
+  // ---- Generate & Print ----
   printBtn.onclick = () => {
     const appData = getAppData();
     const config = getConfig();
