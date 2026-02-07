@@ -9,6 +9,9 @@
 // - No state shape definitions
 // - Minimal DOM touchpoints only
 // --------------------------------------------------
+// --- Global Sadhana Runtime State ---
+window.__SADHANA__ = window.__SADHANA__ || {};
+window.__SADHANA__.isClicker = false; // Tap (JAPA) mode OFF by default
 
 import {
   getAppData,

@@ -37,21 +37,48 @@ function getMantraPattern() {
 // 1. Typing-based Jaap
 // --------------------------------------------------
 
+// export function handleTypingJaap(text) {
+//   registerActivity();
+
+//   const regex = getMantraPattern();
+//   const matches = text.match(regex);
+
+//   const count = matches ? matches.length : 0;
+
+//   // setAppData({
+//   //   text,
+//   //   count,
+//   // });
+//   setAppData({ text });
+
+// }
 export function handleTypingJaap(text) {
   registerActivity();
 
-  const regex = getMantraPattern();
-  const matches = text.match(regex);
-
-  const count = matches ? matches.length : 0;
-
-  // setAppData({
-  //   text,
-  //   count,
-  // });
+  // Update expressive text only
   setAppData({ text });
 
+  // --- Request count updates (do NOT decide truth here) ---
+  const { count } = getAppData();
+  const { mantra, transEnable, transScript } = getConfig();
+
+  const token = transEnable && transScript ? transScript : mantra;
+
+  // Build safe regex for token
+  const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regex = new RegExp(`\\b${escaped}\\b`, "g");
+
+  const matches = text.match(regex);
+  const detected = matches ? matches.length : 0;
+
+  const delta = detected - count;
+  if (delta > 0) {
+    for (let i = 0; i < delta; i++) {
+      handleTapJaap();
+    }
+  }
 }
+
 
 // --------------------------------------------------
 // 2. Tap / Click-based Jaap

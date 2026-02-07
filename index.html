@@ -269,9 +269,6 @@
 
         const KEYS = { DATA: 'sadhana_jholi_data', CONF: 'sadhana_jholi_conf', HIST: 'sadhana_jholi_hist' };
         const MALA = 108; 
-        // let appData = { count: 0, text: "", date: new Date().toDateString(), activeSeconds: 0, ishtaImg: null, customSound: null };
-        // let config = { mantra: "Ram", target: 108, theme: "light", transEnable: false, transScript: "राम" };
-        // let history = []; 
         let lastActivity = 0;
         let soundEnabled = true; let audioSrc = "ram.mp3"; let audioObj = null; 
         let isClicker = false;
@@ -396,7 +393,20 @@
         // function drawMandala(n) { const canvas = document.getElementById('mandalaCanvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,300,300); const cx=150, cy=150, r=140; ctx.beginPath(); ctx.arc(cx,cy,r,0,2*Math.PI); ctx.strokeStyle=config.theme==='dark'?'#444':'#eee'; ctx.lineWidth=2; ctx.stroke(); const pos = n % MALA; for(let i=0; i<pos; i++) { const a = (i/MALA)*2*Math.PI - (Math.PI/2); const x = cx + r*Math.cos(a), y = cy + r*Math.sin(a); ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y); ctx.strokeStyle = `hsla(${i*3.3}, 70%, 50%, 0.4)`; ctx.lineWidth=1; ctx.stroke(); ctx.beginPath(); ctx.arc(x,y,4,0,2*Math.PI); ctx.fillStyle=config.theme==='dark'?'#ffd700':'#d84315'; ctx.fill(); } }
         // function escapeRegExp(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
         document.getElementById('settingsBtn').onclick=()=>document.getElementById('settingsModal').style.display='flex';
-        document.getElementById('modeBtn').onclick=()=>{ isClicker=!isClicker; document.getElementById('jaapArea').style.display=isClicker?'none':'block'; document.getElementById('clickerView').style.display=isClicker?'flex':'none'; };
+        //document.getElementById('modeBtn').onclick=()=>{ isClicker=!isClicker; document.getElementById('jaapArea').style.display=isClicker?'none':'block'; document.getElementById('clickerView').style.display=isClicker?'flex':'none'; };
+        // document.getElementById('modeBtn').onclick = () => {
+        //     window.__SADHANA__.isClicker = !window.__SADHANA__.isClicker;
+
+        //     const isTap = window.__SADHANA__.isClicker;
+
+        //     document.getElementById('jaapArea').style.display = isTap ? 'none' : 'block';
+        //     document.getElementById('clickerView').style.display = isTap ? 'flex' : 'none';
+
+        //     // document.getElementById('modeBtn').innerText = isTap
+        //     //     ? "✋ JAPA (Tap)"
+        //     //     : "✍️ Likith (Type)";
+        // };
+
         //document.getElementById('themeBtn').onclick=()=>{ config.theme=config.theme==='light'?'dark':'light'; applyTheme(); saveState(); drawMandala(appData.count); };
         //function applyTheme(){ if(config.theme==='dark') document.body.classList.add('dark-mode'); else document.body.classList.remove('dark-mode'); }
         document.getElementById('jaapArea').addEventListener('paste', e=>{e.preventDefault(); alert("⚠️ No Shortcuts!");});

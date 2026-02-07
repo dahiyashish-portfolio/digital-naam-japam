@@ -27,13 +27,27 @@ function $(id) {
 export function initJaapUI() {
   const jaapArea = $("jaapArea");
   const tapBtn = $("tapBtn");
+  const modeBtn = document.getElementById("modeBtn");
+  const clickerView = document.getElementById("clickerView");
+  if (modeBtn) {
+      modeBtn.onclick = () => {
+        window.__SADHANA__.isClicker = !window.__SADHANA__.isClicker;
+
+        const isTap = window.__SADHANA__.isClicker;
+
+        if (jaapArea) jaapArea.style.display = isTap ? "none" : "block";
+        if (clickerView) clickerView.style.display = isTap ? "flex" : "none";
+      };
+    }
 
   if (!jaapArea || !tapBtn) return;
 
   // Typing-based Jaap
-  jaapArea.addEventListener("input", (e) => {
-    handleTypingJaap(e.target.value);
-  });
+jaapArea.addEventListener("input", (e) => {
+  if (window.__SADHANA__?.isClicker) return; // ⛔ Tap mode ignores typing
+  handleTypingJaap(e.target.value);
+});
+
 
   // Prevent paste shortcuts (discipline rule)
   jaapArea.addEventListener("paste", (e) => {
@@ -54,7 +68,7 @@ export function initJaapUI() {
   //   }
   // });
 document.addEventListener("keyup", (e) => {
-  if (!window.isClicker) return; // Vidhi gate
+  if (!window.__SADHANA__?.isClicker) return; // Vidhi gate
 
   if (e.code === "Space" || e.code === "Enter") {
     e.preventDefault();
