@@ -74,7 +74,8 @@ export function handleTypingJaap(text) {
   const delta = detected - count;
   if (delta > 0) {
     for (let i = 0; i < delta; i++) {
-      handleTapJaap();
+      //handleTapJaap();
+      handleTapJaap({ syncUI: false });
     }
   }
 }
@@ -84,7 +85,26 @@ export function handleTypingJaap(text) {
 // 2. Tap / Click-based Jaap
 // --------------------------------------------------
 
-export function handleTapJaap() {
+// export function handleTapJaap() {
+//   registerActivity();
+
+//   const { text, count } = getAppData();
+//   const { mantra, transEnable, transScript } = getConfig();
+
+//   const token = transEnable && transScript ? transScript : mantra;
+//   const spacer = text.length > 0 ? " " : "";
+
+//   setAppData({
+//     text: text + spacer + token,
+//     count: count + 1,
+//   });
+//     // 🔁 Sync text to UI (tap & spacebar)
+//   const jaapArea = document.getElementById("jaapArea");
+//   if (jaapArea) jaapArea.value = getAppData().text;
+  
+//   renderStats();
+// }
+export function handleTapJaap({ syncUI = true } = {}) {
   registerActivity();
 
   const { text, count } = getAppData();
@@ -97,10 +117,13 @@ export function handleTapJaap() {
     text: text + spacer + token,
     count: count + 1,
   });
-    // 🔁 Sync text to UI (tap & spacebar)
-  const jaapArea = document.getElementById("jaapArea");
-  if (jaapArea) jaapArea.value = getAppData().text;
-  
+
+  // 🔁 Sync text ONLY for real tap / spacebar
+  if (syncUI) {
+    const jaapArea = document.getElementById("jaapArea");
+    if (jaapArea) jaapArea.value = getAppData().text;
+  }
+
   renderStats();
 }
 
