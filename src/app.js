@@ -10,6 +10,8 @@
 // - Minimal DOM touchpoints only
 // --------------------------------------------------
 // --- Global Sadhana Runtime State ---
+console.log("[BOOT] app.js loaded");
+
 window.__SADHANA__ = window.__SADHANA__ || {};
 window.__SADHANA__.isClicker = false; // Tap (JAPA) mode OFF by default
 

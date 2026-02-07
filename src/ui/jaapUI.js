@@ -25,6 +25,7 @@ function $(id) {
 // --------------------------------------------------
 
 export function initJaapUI() {
+  console.log("[INIT] jaapUI initialized");
   const jaapArea = $("jaapArea");
   const tapBtn = $("tapBtn");
   const modeBtn = document.getElementById("modeBtn");
@@ -44,6 +45,7 @@ export function initJaapUI() {
 
   // Typing-based Jaap
 jaapArea.addEventListener("input", (e) => {
+  console.log("[INPUT]", e.target.value);
   if (window.__SADHANA__?.isClicker) return; // ⛔ Tap mode ignores typing
   handleTypingJaap(e.target.value);
 });

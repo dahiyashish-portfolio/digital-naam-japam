@@ -53,6 +53,7 @@ function getMantraPattern() {
 
 // }
 export function handleTypingJaap(text) {
+  console.log("[ENGINE] handleTypingJaap", text);
   registerActivity();
 
   // 1️⃣ Update expressive text ONLY
@@ -76,6 +77,13 @@ export function handleTypingJaap(text) {
 
   if (delta > 0) {
     for (let i = 0; i < delta; i++) {
+      console.log({
+        text,
+        desiredCount,
+        currentCount: getAppData().count,
+        delta,
+      
+});
       handleTapJaap({ syncUI: false });
     }
     renderStats();
