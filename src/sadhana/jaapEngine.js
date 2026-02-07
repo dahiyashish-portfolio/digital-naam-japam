@@ -55,30 +55,33 @@ function getMantraPattern() {
 export function handleTypingJaap(text) {
   registerActivity();
 
-  // Update expressive text only
+  // 1️⃣ Update expressive text ONLY
   setAppData({ text });
 
-  // --- Request count updates (do NOT decide truth here) ---
-  const { count } = getAppData();
+  // 2️⃣ Detect desired count (OLD BEHAVIOR, restored)
   const { mantra, transEnable, transScript } = getConfig();
 
-  const token = transEnable && transScript ? transScript : mantra;
+  let pat = mantra.trim();
+  if (transEnable && transScript) {
+    pat += "|" + transScript;
+  }
 
-  // Build safe regex for token
-  const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const regex = new RegExp(`\\b${escaped}\\b`, "g");
-
+  const regex = new RegExp(pat, "gi");
   const matches = text.match(regex);
-  const detected = matches ? matches.length : 0;
+  const desiredCount = matches ? matches.length : 0;
 
-  const delta = detected - count;
+  // 3️⃣ Reconcile canonical count to desired count
+  const { count } = getAppData();
+  const delta = desiredCount - count;
+
   if (delta > 0) {
     for (let i = 0; i < delta; i++) {
-      //handleTapJaap();
       handleTapJaap({ syncUI: false });
     }
+    renderStats();
   }
 }
+
 
 
 // --------------------------------------------------
