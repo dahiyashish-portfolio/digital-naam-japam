@@ -70,6 +70,10 @@ export function handleTapJaap() {
     text: text + spacer + token,
     count: count + 1,
   });
+    // 🔁 Sync text to UI (tap & spacebar)
+  const jaapArea = document.getElementById("jaapArea");
+  if (jaapArea) jaapArea.value = getAppData().text;
+  
   renderStats();
 }
 

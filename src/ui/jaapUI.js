@@ -48,11 +48,24 @@ export function initJaapUI() {
   });
 
   // Keyboard support for tap mode (Space / Enter)
-  document.addEventListener("keyup", (e) => {
-    if (e.code === "Space" || e.code === "Enter") {
-      handleTapJaap();
-    }
-  });
+  // document.addEventListener("keyup", (e) => {
+  //   if (e.code === "Space" || e.code === "Enter") {
+  //     handleTapJaap();
+  //   }
+  // });
+document.addEventListener("keyup", (e) => {
+  if (!window.isClicker) return; // Vidhi gate
+
+  if (e.code === "Space" || e.code === "Enter") {
+    e.preventDefault();
+    handleTapJaap();
+
+    // visual feedback (same as mouse tap)
+    const btn = document.getElementById("tapBtn");
+    btn?.classList.add("active-press");
+    setTimeout(() => btn?.classList.remove("active-press"), 100);
+  }
+});
 
   // Generic activity hook (fallback)
   document.addEventListener("click", () => registerActivity());

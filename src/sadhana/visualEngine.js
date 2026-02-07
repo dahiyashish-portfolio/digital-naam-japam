@@ -59,17 +59,39 @@ export function renderMandala() {
   drawMalaWire(mandalaCtx, cx, cy, radius);
   drawCentralBindu(mandalaCtx, cx, cy);
 
-  // 2️⃣ Draw beads ON TOP
-  for (let i = 0; i < MALA; i++) {
-    const angle = (2 * Math.PI * i) / MALA - Math.PI / 2;
-    const x = cx + radius * Math.cos(angle);
-    const y = cy + radius * Math.sin(angle);
+  // // 2️⃣ Draw beads ON TOP
+  // for (let i = 0; i < MALA; i++) {
+  //   const angle = (2 * Math.PI * i) / MALA - Math.PI / 2;
+  //   const x = cx + radius * Math.cos(angle);
+  //   const y = cy + radius * Math.sin(angle);
 
+  //   mandalaCtx.beginPath();
+  //   mandalaCtx.arc(x, y, 4, 0, 2 * Math.PI);
+  //   mandalaCtx.fillStyle = i < filled ? "#ff9933" : "#ccc";
+  //   mandalaCtx.fill();
+  // }
+  for (let i = 0; i < MALA; i++) {
+  const angle = (2 * Math.PI * i) / MALA - Math.PI / 2;
+  const x = cx + radius * Math.cos(angle);
+  const y = cy + radius * Math.sin(angle);
+
+  // 🔸 Optional energy ray (parity with original design)
+  if (i < filled) {
     mandalaCtx.beginPath();
-    mandalaCtx.arc(x, y, 4, 0, 2 * Math.PI);
-    mandalaCtx.fillStyle = i < filled ? "#ff9933" : "#ccc";
-    mandalaCtx.fill();
+    mandalaCtx.moveTo(cx, cy);
+    mandalaCtx.lineTo(x, y);
+    mandalaCtx.strokeStyle = `hsla(${i * 3.3}, 70%, 50%, 0.4)`;
+    mandalaCtx.lineWidth = 1;
+    mandalaCtx.stroke();
   }
+
+  // 🔸 Bead
+  mandalaCtx.beginPath();
+  mandalaCtx.arc(x, y, 4, 0, 2 * Math.PI);
+  mandalaCtx.fillStyle = i < filled ? "#ff9933" : "#ccc";
+  mandalaCtx.fill();
+}
+
 }
 
 
