@@ -13,6 +13,7 @@
 import { getAppData, getConfig, setAppData } from "../core/state.js";
 import { registerActivity } from "../core/time.js";
 import { renderStats } from "../app.js";
+import { renderMandala } from "./visualEngine.js";
 
 // --------------------------------------------------
 // Helpers
@@ -36,85 +37,73 @@ function getMantraPattern() {
 // --------------------------------------------------
 // 1. Typing-based Jaap
 // --------------------------------------------------
-
-// export function handleTypingJaap(text) {
+//This is updating beads but not count or transcripted
+// export function handleTypingJaap(rawText) {
 //   registerActivity();
 
-//   const regex = getMantraPattern();
-//   const matches = text.match(regex);
+//   const { mantra, transEnable, transScript } = getConfig();
 
+//   let text = rawText;
+
+//   // 🔤 Transcription (NO word-boundary, Unicode-safe)
+//   if (transEnable && transScript) {
+//     const escapedMantra = escapeRegExp(mantra.trim());
+//     const replacePattern = new RegExp(escapedMantra, "gi");
+//     text = rawText.replace(replacePattern, transScript);
+//   }
+
+//   // 🧮 Count using canonical pattern (Ram + राम)
+//   const pattern = getMantraPattern();
+//   const matches = text.match(pattern);
 //   const count = matches ? matches.length : 0;
 
-//   // setAppData({
-//   //   text,
-//   //   count,
-//   // });
-//   setAppData({ text });
+//   setAppData({ text, count });
 
+//   // 🔁 SYNC textarea (CRITICAL — same as tap)
+//   const jaapArea = document.getElementById("jaapArea");
+//   if (jaapArea && jaapArea.value !== text) {
+//     jaapArea.value = text;
+//   }
+
+//   // 🔁 UI update
+//   renderStats();
+//   renderMandala();
 // }
-export function handleTypingJaap(text) {
-  console.log("[ENGINE] handleTypingJaap", text);
+export function handleTypingJaap(rawText) {
   registerActivity();
 
-  // 1️⃣ Update expressive text ONLY
-  setAppData({ text });
-
-  // 2️⃣ Detect desired count (OLD BEHAVIOR, restored)
   const { mantra, transEnable, transScript } = getConfig();
 
-  let pat = mantra.trim();
+  let text = rawText;
+
+  // 🔤 Transcription (NO word-boundary, Unicode-safe)
   if (transEnable && transScript) {
-    pat += "|" + transScript;
+    const escapedMantra = escapeRegExp(mantra.trim());
+    const replacePattern = new RegExp(escapedMantra, "gi");
+    text = rawText.replace(replacePattern, transScript);
   }
 
-  const regex = new RegExp(pat, "gi");
-  const matches = text.match(regex);
-  const desiredCount = matches ? matches.length : 0;
+  // 🧮 Count using canonical pattern (Ram + राम)
+  const pattern = getMantraPattern();
+  const matches = text.match(pattern);
+  const count = matches ? matches.length : 0;
 
-  // 3️⃣ Reconcile canonical count to desired count
-  const { count } = getAppData();
-  const delta = desiredCount - count;
+  setAppData({ text, count });
 
-  if (delta > 0) {
-    for (let i = 0; i < delta; i++) {
-      console.log({
-        text,
-        desiredCount,
-        currentCount: getAppData().count,
-        delta,
-      
-});
-      handleTapJaap({ syncUI: false });
-    }
-    renderStats();
+  // 🔁 SYNC textarea (CRITICAL — same as tap)
+  const jaapArea = document.getElementById("jaapArea");
+  if (jaapArea && jaapArea.value !== text) {
+    jaapArea.value = text;
   }
+
+  // 🔁 UI update
+  renderStats();
+  renderMandala();
 }
-
-
-
 // --------------------------------------------------
 // 2. Tap / Click-based Jaap
 // --------------------------------------------------
 
-// export function handleTapJaap() {
-//   registerActivity();
-
-//   const { text, count } = getAppData();
-//   const { mantra, transEnable, transScript } = getConfig();
-
-//   const token = transEnable && transScript ? transScript : mantra;
-//   const spacer = text.length > 0 ? " " : "";
-
-//   setAppData({
-//     text: text + spacer + token,
-//     count: count + 1,
-//   });
-//     // 🔁 Sync text to UI (tap & spacebar)
-//   const jaapArea = document.getElementById("jaapArea");
-//   if (jaapArea) jaapArea.value = getAppData().text;
-  
-//   renderStats();
-// }
 export function handleTapJaap({ syncUI = true } = {}) {
   registerActivity();
 
