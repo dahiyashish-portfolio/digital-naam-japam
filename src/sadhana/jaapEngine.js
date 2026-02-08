@@ -14,6 +14,7 @@ import { getAppData, getConfig, setAppData } from "../core/state.js";
 import { registerActivity } from "../core/time.js";
 import { renderStats } from "../app.js";
 import { renderMandala } from "./visualEngine.js";
+import { playTapSound } from "../ui/soundUI.js";
 
 // --------------------------------------------------
 // Helpers
@@ -37,38 +38,6 @@ function getMantraPattern() {
 // --------------------------------------------------
 // 1. Typing-based Jaap
 // --------------------------------------------------
-//This is updating beads but not count or transcripted
-// export function handleTypingJaap(rawText) {
-//   registerActivity();
-
-//   const { mantra, transEnable, transScript } = getConfig();
-
-//   let text = rawText;
-
-//   // 🔤 Transcription (NO word-boundary, Unicode-safe)
-//   if (transEnable && transScript) {
-//     const escapedMantra = escapeRegExp(mantra.trim());
-//     const replacePattern = new RegExp(escapedMantra, "gi");
-//     text = rawText.replace(replacePattern, transScript);
-//   }
-
-//   // 🧮 Count using canonical pattern (Ram + राम)
-//   const pattern = getMantraPattern();
-//   const matches = text.match(pattern);
-//   const count = matches ? matches.length : 0;
-
-//   setAppData({ text, count });
-
-//   // 🔁 SYNC textarea (CRITICAL — same as tap)
-//   const jaapArea = document.getElementById("jaapArea");
-//   if (jaapArea && jaapArea.value !== text) {
-//     jaapArea.value = text;
-//   }
-
-//   // 🔁 UI update
-//   renderStats();
-//   renderMandala();
-// }
 export function handleTypingJaap(rawText) {
   registerActivity();
 
@@ -106,6 +75,7 @@ export function handleTypingJaap(rawText) {
 
 export function handleTapJaap({ syncUI = true } = {}) {
   registerActivity();
+  playTapSound();
 
   const { text, count } = getAppData();
   const { mantra, transEnable, transScript } = getConfig();

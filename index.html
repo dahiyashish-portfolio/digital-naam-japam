@@ -237,10 +237,11 @@
 
     <script>
         // INIT & VARS
+
         const KEYS = { DATA: 'sadhana_jholi_data', CONF: 'sadhana_jholi_conf', HIST: 'sadhana_jholi_hist' };
         const MALA = 108; 
         let lastActivity = 0;
-        let soundEnabled = true; let audioSrc = "ram.mp3"; let audioObj = null; 
+        //let soundEnabled = true; let audioSrc = "ram.mp3"; let audioObj = null; 
         let isClicker = false;
         let hwImg = null; let sigImg = null;
 
@@ -266,17 +267,17 @@
         function checkActiveTime() { if (Date.now() - lastActivity < 5000) { appData.activeSeconds = (appData.activeSeconds || 0) + 1; if(appData.activeSeconds % 10 === 0) saveState(); updateTimeStats(); } }
         function updateTimeStats() { const sec = appData.activeSeconds || 0; const m = Math.floor(sec / 60); document.getElementById('activeTimeDisplay').innerText = (m < 60 ? m + "m" : Math.floor(m/60) + "h " + (m%60) + "m"); document.getElementById('todayCountDisplay').innerText = appData.count; }
 
-        function playTapSound() {
-            if(!soundEnabled) return;
-            if(!audioObj || audioObj.src !== audioSrc) { audioObj = new Audio(audioSrc); audioObj.volume = 0.5; }
-            audioObj.currentTime = 0; audioObj.play().catch(e => console.log("Audio err", e));
-        }
-        document.getElementById('muteBtn').onclick = function() { soundEnabled = !soundEnabled; this.innerText = soundEnabled ? "🔊" : "🔇"; };
+        // function playTapSound() {
+        //     if(!soundEnabled) return;
+        //     if(!audioObj || audioObj.src !== audioSrc) { audioObj = new Audio(audioSrc); audioObj.volume = 0.5; }
+        //     audioObj.currentTime = 0; audioObj.play().catch(e => console.log("Audio err", e));
+        // }
+        //document.getElementById('muteBtn').onclick = function() { soundEnabled = !soundEnabled; this.innerText = soundEnabled ? "🔊" : "🔇"; };
 
         function handleCountInput() { registerActivity(); playTapSound(); appData.count++; updateStats(); saveState(); }
         
         // File Readers
-        document.getElementById('soundInput').onchange = function() { const r = new FileReader(); r.onload = e => { appData.customSound = e.target.result; audioSrc = appData.customSound; saveState(); alert("Naad Set!"); }; r.readAsDataURL(this.files[0]); };
+        //document.getElementById('soundInput').onchange = function() { const r = new FileReader(); r.onload = e => { appData.customSound = e.target.result; audioSrc = appData.customSound; saveState(); alert("Naad Set!"); }; r.readAsDataURL(this.files[0]); };
         document.getElementById('hwMantraInput').onchange = function() { const r = new FileReader(); r.onload = e => { hwImg = e.target.result; }; r.readAsDataURL(this.files[0]); };
         document.getElementById('sigInput').onchange = function() { const r = new FileReader(); r.onload = e => { sigImg = e.target.result; }; r.readAsDataURL(this.files[0]); };
 
