@@ -1,63 +1,41 @@
 // src/ui/profileUI.js
 // --------------------------------------------------
 // Profile & Login UI (Netlify Identity)
-// Phase 8C Step 1: Extracted from index.html
+// Phase 8C Step 1 — CORRECT binding
 // --------------------------------------------------
 
 let currentUser = null;
 
-// export function initProfileUI() {
-//   if (!window.netlifyIdentity) return;
-
-//   window.netlifyIdentity.init();
-
-//   const user = window.netlifyIdentity.currentUser();
-//   if (user) updateProfileUI(user);
-
-//   window.netlifyIdentity.on("login", user => {
-//     updateProfileUI(user);
-//     window.netlifyIdentity.close();
-//   });
-
-//   window.netlifyIdentity.on("logout", () => {
-//     updateProfileUI(null);
-//     document.location.href = "/";
-//   });
-// }
-// export function initProfileUI() {
-//   if (!window.netlifyIdentity) return;
-
-//   // 🔑 Wait until Netlify Identity is fully ready
-//   window.netlifyIdentity.on("init", user => {
-//     updateProfileUI(user);
-
-//     window.netlifyIdentity.on("login", user => {
-//       updateProfileUI(user);
-//       window.netlifyIdentity.close();
-//     });
-
-//     window.netlifyIdentity.on("logout", () => {
-//       updateProfileUI(null);
-//       document.location.href = "/";
-//     });
-//   });
-// }
 export function initProfileUI() {
+  const btn = document.getElementById("loginActionBtn");
+  if (!btn) return;
+
+  // ✅ ALWAYS bind click immediately
+  btn.onclick = handleLogin;
+
+  // If Netlify Identity not loaded yet, wait
   if (!window.netlifyIdentity) return;
 
+  // Sync once widget is ready (or already ready)
   window.netlifyIdentity.on("init", user => {
     updateProfileUI(user);
-
-    window.netlifyIdentity.on("login", user => {
-      updateProfileUI(user);
-      window.netlifyIdentity.close();
-    });
-
-    window.netlifyIdentity.on("logout", () => {
-      updateProfileUI(null);
-      document.location.href = "/";
-    });
   });
+
+  window.netlifyIdentity.on("login", user => {
+    updateProfileUI(user);
+    window.netlifyIdentity.close();
+  });
+
+  window.netlifyIdentity.on("logout", () => {
+    updateProfileUI(null);
+    document.location.href = "/";
+  });
+
+  // In case init already happened
+  const existingUser = window.netlifyIdentity.currentUser?.();
+  if (existingUser) {
+    updateProfileUI(existingUser);
+  }
 }
 
 function updateProfileUI(user) {
@@ -73,12 +51,10 @@ function updateProfileUI(user) {
     nameD.innerText = user.user_metadata?.full_name || "Sadhak";
     statD.innerText = "Logged In (Netlify)";
     btn.innerText = "Nikas (Logout)";
-    btn.onclick = () => window.netlifyIdentity.logout();
   } else {
     nameD.innerText = "Abhyasi (Guest)";
     statD.innerText = "Sthaniya (Local)";
     btn.innerText = "Pravesh (Login)";
-    btn.onclick = handleLogin;
   }
 }
 
@@ -86,6 +62,11 @@ function handleLogin() {
   const jholi = document.getElementById("jholiModal");
   if (jholi) jholi.style.display = "none";
 
-  if (currentUser) window.netlifyIdentity.logout();
-  else window.netlifyIdentity.open();
+  if (!window.netlifyIdentity) return;
+
+  if (currentUser) {
+    window.netlifyIdentity.logout();
+  } else {
+    window.netlifyIdentity.open();
+  }
 }
