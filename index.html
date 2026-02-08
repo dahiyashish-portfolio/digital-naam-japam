@@ -251,15 +251,15 @@
             // if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
         });
 
-        function loadState() {
-            const d=localStorage.getItem(KEYS.DATA), c=localStorage.getItem(KEYS.CONF), h=localStorage.getItem(KEYS.HIST);
-            if(d) { let l = JSON.parse(d); if(l.activeSeconds===undefined || isNaN(l.activeSeconds)) l.activeSeconds=0; appData = Object.assign(appData, l); }
-            if(c) config=JSON.parse(c); if(h) history=JSON.parse(h);
-            document.getElementById('mantraInput').value = config.mantra; document.getElementById('jaapArea').value = appData.text;
-            if(appData.ishtaImg) document.getElementById('ishtaImageDisplay').src = appData.ishtaImg;
-            if(appData.customSound) audioSrc = appData.customSound; 
-            updateStats();
-        }
+        // function loadState() {
+        //     const d=localStorage.getItem(KEYS.DATA), c=localStorage.getItem(KEYS.CONF), h=localStorage.getItem(KEYS.HIST);
+        //     if(d) { let l = JSON.parse(d); if(l.activeSeconds===undefined || isNaN(l.activeSeconds)) l.activeSeconds=0; appData = Object.assign(appData, l); }
+        //     if(c) config=JSON.parse(c); if(h) history=JSON.parse(h);
+        //     document.getElementById('mantraInput').value = config.mantra; document.getElementById('jaapArea').value = appData.text;
+        //     if(appData.ishtaImg) document.getElementById('ishtaImageDisplay').src = appData.ishtaImg;
+        //     if(appData.customSound) audioSrc = appData.customSound; 
+        //     updateStats();
+        // }
         function saveState() { localStorage.setItem(KEYS.DATA, JSON.stringify(appData)); localStorage.setItem(KEYS.CONF, JSON.stringify(config)); localStorage.setItem(KEYS.HIST, JSON.stringify(history)); }
         function checkNewDay() { const today = new Date().toDateString(); if (appData.date !== today) { if (appData.count > 0) history.unshift({ date: appData.date, count: appData.count }); appData.count = 0; appData.text = ""; appData.activeSeconds = 0; appData.date = today; saveState(); updateStats(); } }
 
@@ -280,7 +280,6 @@
         //document.getElementById('soundInput').onchange = function() { const r = new FileReader(); r.onload = e => { appData.customSound = e.target.result; audioSrc = appData.customSound; saveState(); alert("Naad Set!"); }; r.readAsDataURL(this.files[0]); };
         document.getElementById('hwMantraInput').onchange = function() { const r = new FileReader(); r.onload = e => { hwImg = e.target.result; }; r.readAsDataURL(this.files[0]); };
         document.getElementById('sigInput').onchange = function() { const r = new FileReader(); r.onload = e => { sigImg = e.target.result; }; r.readAsDataURL(this.files[0]); };
-
         document.getElementById('backupBtn').onclick = () => { document.getElementById('jholiModal').style.display='none'; document.getElementById('backupPassModal').style.display='flex'; };
         document.getElementById('restoreBtn').onclick = () => { document.getElementById('jholiModal').style.display='none'; document.getElementById('restorePassModal').style.display='flex'; };
         // Helpers
