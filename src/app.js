@@ -40,14 +40,14 @@ import { initBackupUI } from "./ui/backupUI.js";
 import { initThemeUI } from "./ui/themeUI.js";
 import { initSettingsUI } from "./ui/settingsUI.js";
 import { initPrintUI } from "./ui/printUI.js";
-
-
+import { initProfileUI } from "./ui/profileUI.js";
 
 // --------------------------------------------------
 // 1. Application Init
 // --------------------------------------------------
 
 function initApp() {
+  initProfileUI();
   // Load persisted state (offline-first)
   loadFromStorage();
 
@@ -98,7 +98,7 @@ function initApp() {
   //     await restoreEncryptedBackup(file, pwd);
   //   };
   // }
-
+  //initProfileUI();
   initJholiUI();
   initBackupUI();
   initThemeUI();
