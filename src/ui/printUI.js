@@ -61,10 +61,20 @@ export function initPrintUI() {
     return;
   }
   // ---- Open Print Modal ----
+  // openBtn.onclick = () => {
+  //   hwImg = null;
+  //   sigImg = null;
+  
+  //   if (jholiModal) jholiModal.style.display = "none";
+  //   if (printModal) printModal.style.display = "flex";
+  // };
   openBtn.onclick = () => {
     hwImg = null;
     sigImg = null;
-  
+
+    if (hwInput) hwInput.value = "";   // 🔴 CRITICAL
+    if (sigInput) sigInput.value = ""; // 🔴 CRITICAL
+
     if (jholiModal) jholiModal.style.display = "none";
     if (printModal) printModal.style.display = "flex";
   };
@@ -74,6 +84,8 @@ export function initPrintUI() {
   printBtn.onclick = () => {
     const appData = getAppData();
     const config = getConfig();
+    const localHwImg = hwImg;   // 🔒 snapshot
+    const localSigImg = sigImg; // 🔒 snapshot
 
     // ---- Build mantra regex ----
     let pat = escapeRegExp(config.mantra);
@@ -92,12 +104,12 @@ export function initPrintUI() {
     let gridHtml = "";
     //const hwImg = appData.ishtaImg || null; // hwImg comes ONLY from hwMantraInput upload (print-local state)
 
-    if (hwImg) {
+    if (localHwImg) {
       for (let i = 0; i < matches.length; i++) {
         gridHtml += `
           <div style="border-right:1px solid #fc0; border-bottom:1px solid #fc0;
                       padding:5px; display:flex; justify-content:center; align-items:center;">
-            <img src="${hwImg}" style="max-height:25px; max-width:100%;">
+            <img src="${localHwImg}" style="max-height:25px; max-width:100%;">
           </div>`;
       }
     } else {
@@ -143,7 +155,7 @@ export function initPrintUI() {
         <div style="margin-top:20px; font-style:italic;">Ardas: ${ardas}</div>
 
         <div style="text-align:right; margin-top:40px;">
-          ${sigImg ? `<img src="${sigImg}" height="50">` : "Hastakshar"}
+          ${localSigImg ? `<img src="${localSigImg}" height="50">` : "Hastakshar"}
         </div>
       </body>
       </html>`);
