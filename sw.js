@@ -1,4 +1,4 @@
-const CACHE_NAME = 'naam-jaap-v1';
+const CACHE_NAME = 'naam-jaap-v2.6';
 const ASSETS = [
     '/',
     '/index.html',
