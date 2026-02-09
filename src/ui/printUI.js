@@ -15,6 +15,8 @@
 // - NO storage access
 // - Exact visual parity with legacy print
 // --------------------------------------------------
+let hwImg = null;
+let sigImg = null;
 
 import { getAppData, getConfig } from "../core/state.js";
 
@@ -31,6 +33,28 @@ export function initPrintUI() {
   const printBtn = $("doPrintBtn");
   const jholiModal = $("jholiModal");
   const printModal = $("printModal");
+  const hwInput = document.getElementById("hwMantraInput");
+  const sigInput = document.getElementById("sigInput");
+
+  if (hwInput) {
+    hwInput.onchange = () => {
+      const f = hwInput.files?.[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = e => (hwImg = e.target.result);
+      r.readAsDataURL(f);
+    };
+  }
+
+  if (sigInput) {
+    sigInput.onchange = () => {
+      const f = sigInput.files?.[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = e => (sigImg = e.target.result);
+      r.readAsDataURL(f);
+    };
+  }
 
   if (!openBtn || !printBtn) {
     console.warn("[printUI] print buttons not found");
@@ -38,9 +62,13 @@ export function initPrintUI() {
   }
   // ---- Open Print Modal ----
   openBtn.onclick = () => {
+    hwImg = null;
+    sigImg = null;
+  
     if (jholiModal) jholiModal.style.display = "none";
     if (printModal) printModal.style.display = "flex";
   };
+
 
   // ---- Generate & Print ----
   printBtn.onclick = () => {
@@ -62,7 +90,7 @@ export function initPrintUI() {
 
     // ---- Grid generation ----
     let gridHtml = "";
-    const hwImg = appData.ishtaImg || null; // handwriting / ishta image
+    //const hwImg = appData.ishtaImg || null; // hwImg comes ONLY from hwMantraInput upload (print-local state)
 
     if (hwImg) {
       for (let i = 0; i < matches.length; i++) {
@@ -85,7 +113,7 @@ export function initPrintUI() {
     // ---- Optional UI fields ----
     const sadhak = $("devName")?.value || "Guest";
     const ardas = $("ardasNote")?.value || "";
-    const sigImg = appData.customSound || null; // reuse if signature image exists
+    //const sigImg = appData.customSound || null;// sigImg comes from file input, scoped to print only
 
     // ---- Open print window ----
     const w = window.open("", "", "width=800,height=800");

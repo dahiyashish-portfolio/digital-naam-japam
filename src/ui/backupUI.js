@@ -34,6 +34,21 @@ export function initBackupUI() {
   const backupModal = $("backupPassModal");
   const restoreModal = $("restorePassModal");
 
+  const backupBtn = $("backupBtn");
+  const restoreBtn = $("restoreBtn");
+
+  if (backupBtn)
+    backupBtn.onclick = () => {
+      $("jholiModal").style.display = "none";
+      $("backupPassModal").style.display = "flex";
+    };
+  
+  if (restoreBtn)
+    restoreBtn.onclick = () => {
+      $("jholiModal").style.display = "none";
+      $("restorePassModal").style.display = "flex";
+    };
+
   // ---- Backup ----
   if (doBackupBtn && backupPassInput) {
     doBackupBtn.onclick = async () => {

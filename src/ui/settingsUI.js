@@ -20,6 +20,14 @@ import { getConfig, setConfig } from "../core/state.js";
 function $(id) {
   return document.getElementById(id);
 }
+const settingsBtn = document.getElementById("settingsBtn");
+const modal = document.getElementById("settingsModal");
+
+if (settingsBtn && modal) {
+  settingsBtn.onclick = () => {
+    modal.style.display = "flex";
+  };
+}
 
 export function initSettingsUI() {
   const saveBtn = $("saveSettingsBtn");

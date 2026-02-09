@@ -238,12 +238,11 @@
     <script>
         // INIT & VARS
 
-        const KEYS = { DATA: 'sadhana_jholi_data', CONF: 'sadhana_jholi_conf', HIST: 'sadhana_jholi_hist' };
-        const MALA = 108; 
-        let lastActivity = 0;
-        //let soundEnabled = true; let audioSrc = "ram.mp3"; let audioObj = null; 
-        let isClicker = false;
-        let hwImg = null; let sigImg = null;
+        //const KEYS = { DATA: 'sadhana_jholi_data', CONF: 'sadhana_jholi_conf', HIST: 'sadhana_jholi_hist' };
+        //const MALA = 108; 
+        //let lastActivity = 0;
+        //let isClicker = false;
+        //let hwImg = null; let sigImg = null;
 
         window.addEventListener('load', () => {
             // loadState(); checkNewDay(); updateStats(); applyTheme();
@@ -251,41 +250,23 @@
             // if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
         });
 
-        // function loadState() {
-        //     const d=localStorage.getItem(KEYS.DATA), c=localStorage.getItem(KEYS.CONF), h=localStorage.getItem(KEYS.HIST);
-        //     if(d) { let l = JSON.parse(d); if(l.activeSeconds===undefined || isNaN(l.activeSeconds)) l.activeSeconds=0; appData = Object.assign(appData, l); }
-        //     if(c) config=JSON.parse(c); if(h) history=JSON.parse(h);
-        //     document.getElementById('mantraInput').value = config.mantra; document.getElementById('jaapArea').value = appData.text;
-        //     if(appData.ishtaImg) document.getElementById('ishtaImageDisplay').src = appData.ishtaImg;
-        //     if(appData.customSound) audioSrc = appData.customSound; 
-        //     updateStats();
-        // }
         function saveState() { localStorage.setItem(KEYS.DATA, JSON.stringify(appData)); localStorage.setItem(KEYS.CONF, JSON.stringify(config)); localStorage.setItem(KEYS.HIST, JSON.stringify(history)); }
         function checkNewDay() { const today = new Date().toDateString(); if (appData.date !== today) { if (appData.count > 0) history.unshift({ date: appData.date, count: appData.count }); appData.count = 0; appData.text = ""; appData.activeSeconds = 0; appData.date = today; saveState(); updateStats(); } }
 
         function registerActivity() { lastActivity = Date.now(); updateTimeStats(); }
         function checkActiveTime() { if (Date.now() - lastActivity < 5000) { appData.activeSeconds = (appData.activeSeconds || 0) + 1; if(appData.activeSeconds % 10 === 0) saveState(); updateTimeStats(); } }
         function updateTimeStats() { const sec = appData.activeSeconds || 0; const m = Math.floor(sec / 60); document.getElementById('activeTimeDisplay').innerText = (m < 60 ? m + "m" : Math.floor(m/60) + "h " + (m%60) + "m"); document.getElementById('todayCountDisplay').innerText = appData.count; }
-
-        // function playTapSound() {
-        //     if(!soundEnabled) return;
-        //     if(!audioObj || audioObj.src !== audioSrc) { audioObj = new Audio(audioSrc); audioObj.volume = 0.5; }
-        //     audioObj.currentTime = 0; audioObj.play().catch(e => console.log("Audio err", e));
-        // }
-        //document.getElementById('muteBtn').onclick = function() { soundEnabled = !soundEnabled; this.innerText = soundEnabled ? "🔊" : "🔇"; };
-
         function handleCountInput() { registerActivity(); playTapSound(); appData.count++; updateStats(); saveState(); }
         
         // File Readers
-        //document.getElementById('soundInput').onchange = function() { const r = new FileReader(); r.onload = e => { appData.customSound = e.target.result; audioSrc = appData.customSound; saveState(); alert("Naad Set!"); }; r.readAsDataURL(this.files[0]); };
-        document.getElementById('hwMantraInput').onchange = function() { const r = new FileReader(); r.onload = e => { hwImg = e.target.result; }; r.readAsDataURL(this.files[0]); };
-        document.getElementById('sigInput').onchange = function() { const r = new FileReader(); r.onload = e => { sigImg = e.target.result; }; r.readAsDataURL(this.files[0]); };
-        document.getElementById('backupBtn').onclick = () => { document.getElementById('jholiModal').style.display='none'; document.getElementById('backupPassModal').style.display='flex'; };
-        document.getElementById('restoreBtn').onclick = () => { document.getElementById('jholiModal').style.display='none'; document.getElementById('restorePassModal').style.display='flex'; };
+        //document.getElementById('hwMantraInput').onchange = function() { const r = new FileReader(); r.onload = e => { hwImg = e.target.result; }; r.readAsDataURL(this.files[0]); };
+        //document.getElementById('sigInput').onchange = function() { const r = new FileReader(); r.onload = e => { sigImg = e.target.result; }; r.readAsDataURL(this.files[0]); };
+        //document.getElementById('backupBtn').onclick = () => { document.getElementById('jholiModal').style.display='none'; document.getElementById('backupPassModal').style.display='flex'; };
+        //document.getElementById('restoreBtn').onclick = () => { document.getElementById('jholiModal').style.display='none'; document.getElementById('restorePassModal').style.display='flex'; };
         // Helpers
         function updateStats() { document.getElementById('roundsCount').innerText = Math.floor(appData.count/MALA); updateTimeStats(); drawMandala(appData.count); }
-        document.getElementById('settingsBtn').onclick=()=>document.getElementById('settingsModal').style.display='flex';
-        document.getElementById('jaapArea').addEventListener('paste', e=>{e.preventDefault(); alert("⚠️ No Shortcuts!");});
+        //document.getElementById('settingsBtn').onclick=()=>document.getElementById('settingsModal').style.display='flex';
+        //document.getElementById('jaapArea').addEventListener('paste', e=>{e.preventDefault(); alert("⚠️ No Shortcuts!");});
     </script>
     <script type="module" src="./src/app.js"></script>
 </body>
