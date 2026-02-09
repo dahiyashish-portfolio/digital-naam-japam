@@ -6,7 +6,7 @@
 
 import { getAppData, setAppData } from "../core/state.js";
 
-let soundEnabled = true;
+let soundEnabled = false;
 let audioSrc = "ram.mp3";
 let audioObj = null;
 
@@ -37,13 +37,16 @@ export function playTapSound() {
     audioObj = new Audio(audioSrc);
     audioObj.volume = 0.5;
   }
-
   audioObj.currentTime = 0;
   audioObj.play().catch(() => {});
 }
 
 function toggleMute() {
   soundEnabled = !soundEnabled;
+  if (!soundEnabled && audioObj) {
+    audioObj.pause();
+    audioObj.currentTime = 0;
+  }
   updateMuteIcon(this);
 }
 

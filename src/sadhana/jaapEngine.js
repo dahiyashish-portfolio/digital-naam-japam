@@ -40,7 +40,7 @@ function getMantraPattern() {
 // --------------------------------------------------
 export function handleTypingJaap(rawText) {
   registerActivity();
-
+  playTapSound();
   const { mantra, transEnable, transScript } = getConfig();
 
   let text = rawText;
@@ -95,6 +95,7 @@ export function handleTapJaap({ syncUI = true } = {}) {
   }
 
   renderStats();
+  renderMandala();
 }
 
 // --------------------------------------------------

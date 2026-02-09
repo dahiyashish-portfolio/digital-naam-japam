@@ -6,9 +6,8 @@
 import { setAppData, getAppData } from "../core/state.js";
 
 export function initIshtaUI() {
-  const input = document.getElementById("ishtaUploadInput");
+  const input = document.getElementById("ishtaInput");
   const img = document.getElementById("ishtaImageDisplay");
-
   if (!input || !img) return;
 
   input.addEventListener("change", () => {
