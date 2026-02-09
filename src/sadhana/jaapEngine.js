@@ -14,7 +14,6 @@ import { getAppData, getConfig, setAppData } from "../core/state.js";
 import { registerActivity } from "../core/time.js";
 import { renderStats } from "../app.js";
 import { renderMandala } from "./visualEngine.js";
-import { playTapSound } from "../ui/soundUI.js";
 
 // --------------------------------------------------
 // Helpers
@@ -40,7 +39,6 @@ function getMantraPattern() {
 // --------------------------------------------------
 export function handleTypingJaap(rawText) {
   registerActivity();
-  playTapSound();
   const { mantra, transEnable, transScript } = getConfig();
 
   let text = rawText;
@@ -75,7 +73,6 @@ export function handleTypingJaap(rawText) {
 
 export function handleTapJaap({ syncUI = true } = {}) {
   registerActivity();
-  playTapSound();
 
   const { text, count } = getAppData();
   const { mantra, transEnable, transScript } = getConfig();

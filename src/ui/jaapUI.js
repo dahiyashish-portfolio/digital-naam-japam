@@ -11,7 +11,7 @@
 
 import { handleTypingJaap, handleTapJaap } from "../sadhana/jaapEngine.js";
 import { registerActivity } from "../core/time.js";
-
+import { notifyJapaActivity } from "./soundUI.js";
 // --------------------------------------------------
 // DOM Helpers
 // --------------------------------------------------
@@ -48,6 +48,7 @@ jaapArea.addEventListener("input", (e) => {
   console.log("[INPUT]", e.target.value);
   if (window.__SADHANA__?.isClicker) return; // ⛔ Tap mode ignores typing
   handleTypingJaap(e.target.value);
+  notifyJapaActivity();
 });
 
 
@@ -61,6 +62,7 @@ jaapArea.addEventListener("input", (e) => {
   tapBtn.addEventListener("pointerup", (e) => {
     e.preventDefault();
     handleTapJaap();
+    notifyJapaActivity();
   });
 
   // Keyboard support for tap mode (Space / Enter)
