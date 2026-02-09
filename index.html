@@ -244,19 +244,19 @@
         //let isClicker = false;
         //let hwImg = null; let sigImg = null;
 
-        window.addEventListener('load', () => {
-            // loadState(); checkNewDay(); updateStats(); applyTheme();
-            // setInterval(checkActiveTime, 1000); startJyotiLoop();
-            // if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
-        });
+        // window.addEventListener('load', () => {
+        //     // loadState(); checkNewDay(); updateStats(); applyTheme();
+        //     // setInterval(checkActiveTime, 1000); startJyotiLoop();
+        //     // if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
+        // });
 
-        function saveState() { localStorage.setItem(KEYS.DATA, JSON.stringify(appData)); localStorage.setItem(KEYS.CONF, JSON.stringify(config)); localStorage.setItem(KEYS.HIST, JSON.stringify(history)); }
-        function checkNewDay() { const today = new Date().toDateString(); if (appData.date !== today) { if (appData.count > 0) history.unshift({ date: appData.date, count: appData.count }); appData.count = 0; appData.text = ""; appData.activeSeconds = 0; appData.date = today; saveState(); updateStats(); } }
+        //function saveState() { localStorage.setItem(KEYS.DATA, JSON.stringify(appData)); localStorage.setItem(KEYS.CONF, JSON.stringify(config)); localStorage.setItem(KEYS.HIST, JSON.stringify(history)); }
+        //function checkNewDay() { const today = new Date().toDateString(); if (appData.date !== today) { if (appData.count > 0) history.unshift({ date: appData.date, count: appData.count }); appData.count = 0; appData.text = ""; appData.activeSeconds = 0; appData.date = today; saveState(); updateStats(); } }
 
-        function registerActivity() { lastActivity = Date.now(); updateTimeStats(); }
-        function checkActiveTime() { if (Date.now() - lastActivity < 5000) { appData.activeSeconds = (appData.activeSeconds || 0) + 1; if(appData.activeSeconds % 10 === 0) saveState(); updateTimeStats(); } }
-        function updateTimeStats() { const sec = appData.activeSeconds || 0; const m = Math.floor(sec / 60); document.getElementById('activeTimeDisplay').innerText = (m < 60 ? m + "m" : Math.floor(m/60) + "h " + (m%60) + "m"); document.getElementById('todayCountDisplay').innerText = appData.count; }
-        function handleCountInput() { registerActivity(); playTapSound(); appData.count++; updateStats(); saveState(); }
+        //function registerActivity() { lastActivity = Date.now(); updateTimeStats(); }
+        //function checkActiveTime() { if (Date.now() - lastActivity < 5000) { appData.activeSeconds = (appData.activeSeconds || 0) + 1; if(appData.activeSeconds % 10 === 0) saveState(); updateTimeStats(); } }
+        //function updateTimeStats() { const sec = appData.activeSeconds || 0; const m = Math.floor(sec / 60); document.getElementById('activeTimeDisplay').innerText = (m < 60 ? m + "m" : Math.floor(m/60) + "h " + (m%60) + "m"); document.getElementById('todayCountDisplay').innerText = appData.count; }
+        //function handleCountInput() { registerActivity(); playTapSound(); appData.count++; updateStats(); saveState(); }
         
         // File Readers
         //document.getElementById('hwMantraInput').onchange = function() { const r = new FileReader(); r.onload = e => { hwImg = e.target.result; }; r.readAsDataURL(this.files[0]); };
@@ -264,7 +264,7 @@
         //document.getElementById('backupBtn').onclick = () => { document.getElementById('jholiModal').style.display='none'; document.getElementById('backupPassModal').style.display='flex'; };
         //document.getElementById('restoreBtn').onclick = () => { document.getElementById('jholiModal').style.display='none'; document.getElementById('restorePassModal').style.display='flex'; };
         // Helpers
-        function updateStats() { document.getElementById('roundsCount').innerText = Math.floor(appData.count/MALA); updateTimeStats(); drawMandala(appData.count); }
+        //function updateStats() { document.getElementById('roundsCount').innerText = Math.floor(appData.count/MALA); updateTimeStats(); drawMandala(appData.count); }
         //document.getElementById('settingsBtn').onclick=()=>document.getElementById('settingsModal').style.display='flex';
         //document.getElementById('jaapArea').addEventListener('paste', e=>{e.preventDefault(); alert("⚠️ No Shortcuts!");});
     </script>
