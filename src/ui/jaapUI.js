@@ -12,6 +12,7 @@
 import { handleTypingJaap, handleTapJaap } from "../sadhana/jaapEngine.js";
 import { registerActivity } from "../core/time.js";
 import { notifyJapaActivity } from "./soundUI.js";
+import { getAppData } from "../core/state.js";
 // --------------------------------------------------
 // DOM Helpers
 // --------------------------------------------------
@@ -25,11 +26,18 @@ function $(id) {
 // --------------------------------------------------
 
 export function initJaapUI() {
-  console.log("[INIT] jaapUI initialized");
+  //console.log("[INIT] jaapUI initialized");
   const jaapArea = $("jaapArea");
   const tapBtn = $("tapBtn");
   const modeBtn = document.getElementById("modeBtn");
   const clickerView = document.getElementById("clickerView");
+  if (jaapArea) {
+  const { text } = getAppData();
+  if (text) {
+    jaapArea.value = text;
+  }
+  }
+
   if (modeBtn) {
       modeBtn.onclick = () => {
         window.__SADHANA__.isClicker = !window.__SADHANA__.isClicker;
@@ -45,7 +53,7 @@ export function initJaapUI() {
 
   // Typing-based Jaap
 jaapArea.addEventListener("input", (e) => {
-  console.log("[INPUT]", e.target.value);
+  //console.log("[INPUT]", e.target.value);
   if (window.__SADHANA__?.isClicker) return; // ⛔ Tap mode ignores typing
   handleTypingJaap(e.target.value);
   notifyJapaActivity();
