@@ -42,6 +42,7 @@ import { initSettingsUI } from "./ui/settingsUI.js";
 import { initPrintUI } from "./ui/printUI.js";
 import { initProfileUI } from "./ui/profileUI.js";
 import { initSoundUI } from "./ui/soundUI.js";
+import { getOrCreateDeviceId } from "./core/device.js";
 
 // --------------------------------------------------
 // 1. Application Init
@@ -105,9 +106,8 @@ function initApp() {
   initSettingsUI();
   initPrintUI();
   initSoundUI();
-
-  // Start Ekagrata Engine
   startEkagrataEngine();
+  getOrCreateDeviceId(); 
 }
 
 

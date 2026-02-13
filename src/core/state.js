@@ -9,6 +9,7 @@
 // - Controlled mutation only via setters
 // - Offline-first, truth-preserving
 // --------------------------------------------------
+import { getOrCreateDeviceId } from "./device.js";
 
 export const MALA = 108;
 
@@ -20,6 +21,7 @@ const DEFAULT_APP_DATA = {
   activeSeconds: 0,
   ishtaImg: null,
   customSound: null,
+  deviceId: null
 };
 
 const DEFAULT_CONFIG = {
@@ -42,6 +44,16 @@ function normalizeAppData(input) {
     ...(input && typeof input === "object" ? input : {}),
   };
 
+  if (!base.deviceId) {
+    base.deviceId = getOrCreateDeviceId();
+  }
+  if (base.count === undefined || Number.isNaN(base.count)) {
+    base.count = 0;
+  }
+  if (base.text === undefined || typeof base.text !== "string") {
+    base.text = "";
+  }
+  
   if (base.activeSeconds === undefined || Number.isNaN(base.activeSeconds)) {
     base.activeSeconds = 0;
   }
@@ -103,10 +115,20 @@ export function resetDailyState(today) {
 
   if (appData.date !== current) {
     if (appData.count > 0) {
+      // history = [
+      //   { date: appData.date, count: appData.count },
+      //   ...history,
+      // ];
       history = [
-        { date: appData.date, count: appData.count },
+        {
+          date: appData.date,
+          count: appData.count,
+          activeSeconds: appData.activeSeconds || 0,
+          deviceId: appData.deviceId,
+        },
         ...history,
-      ];
+    ];
+
     }
 
     appData = normalizeAppData({
