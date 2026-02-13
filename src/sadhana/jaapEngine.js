@@ -14,6 +14,7 @@ import { getAppData, getConfig, setAppData } from "../core/state.js";
 import { registerActivity } from "../core/time.js";
 import { renderStats } from "../app.js";
 import { renderMandala } from "./visualEngine.js";
+import { saveToStorage } from "../core/storage.js";
 
 // --------------------------------------------------
 // Helpers
@@ -66,6 +67,7 @@ export function handleTypingJaap(rawText) {
   // 🔁 UI update
   renderStats();
   renderMandala();
+  saveToStorage();
 }
 // --------------------------------------------------
 // 2. Tap / Click-based Jaap
